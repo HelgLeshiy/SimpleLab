@@ -3,9 +3,22 @@
 #include "Namescope.h"
 #include "Lexer.h"
 
+
+/**
+* Parser class definition.
+* Uses for calculating string expressions in a single double value
+**/
 class Parser
 {
 public:
+	/**
+	* Parse (execute) math expression
+	* 
+	* param input: String with an expression
+	* param scope: A namespace with preinstalled functions and variables ( memory )
+	*
+	* return: result double value
+	**/
 	double parse(const std::string& input, Namescope *scope);
 
 private:
