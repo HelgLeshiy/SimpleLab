@@ -26,7 +26,7 @@ struct TypedValue : public Value
 	T value;
 };
 
-class ActivationRecord;
+class Namescope;
 
 /**
 *	Definition for a preinstalled math function.
@@ -36,7 +36,7 @@ class ActivationRecord;
 **/
 struct InstalledFunction
 {
-	std::function<double(const std::vector<std::shared_ptr<Value>>&)> function;
+	std::function<double(Namescope*, const std::vector<std::shared_ptr<Value>>&)> function;
     int argnum;
 };
 
@@ -89,7 +89,7 @@ public:
 	*	param	argnum	The number of agruments
 	*	param	name	The name of this function
 	**/
-    void installFunction(std::function<double(const std::vector<std::shared_ptr<Value>>&)> f, int argnum, std::string name);
+    void installFunction(std::function<double(Namescope*, const std::vector<std::shared_ptr<Value>>&)> f, int argnum, std::string name);
 
 	/**
 	*	Install a new variable in this namescope
