@@ -47,7 +47,7 @@ Token Lexer::scan()
 		getChar();
 	}
 
-	skipWhite();
+	skipComma();
 	return token;
 }
 
@@ -66,7 +66,7 @@ void Lexer::match(char c)
 		sprintf(msg, "Expected %c", c);
 		throw std::runtime_error(msg);
 	}
-	skipWhite();
+	skipComma();
 }
 
 void Lexer::skipWhite()
@@ -99,7 +99,7 @@ std::string Lexer::getName()
 		getChar();
 	}
 
-	skipWhite();
+	skipComma();
 	return name;
 }
 
@@ -125,7 +125,7 @@ std::string Lexer::getNum()
 			getChar();
 		}
 	}
-	skipWhite();
+	skipComma();
 
 	return num;
 }
@@ -142,7 +142,7 @@ std::string Lexer::getOp()
 		op += look;
 		getChar();
 	}
-	skipWhite();
+	skipComma();
 
 	return op;
 }
@@ -159,7 +159,7 @@ std::string Lexer::getString()
 		getChar();
 	}
 	match('\"');
-	skipWhite();
+	skipComma();
 
 	return str;
 }
