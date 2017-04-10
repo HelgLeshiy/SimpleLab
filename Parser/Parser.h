@@ -21,6 +21,8 @@ public:
 	**/
 	double parse(const std::string& input, Namescope *scope);
 
+	const std::string& getLastVar() const { return lastVar; }
+
 private:
 	void getToken();
 	void skipWhite();
@@ -45,6 +47,7 @@ private:
 	//std::map<std::string, double> memory;
 	//std::map<std::string, std::function<double(void)>> functions;
 	bool hasVarName;
+	std::string lastVar;
 	std::stringstream ss;
 
 	Namescope *ns;

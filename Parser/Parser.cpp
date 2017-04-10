@@ -76,6 +76,8 @@ double Parser::assigment()
 	else
 		name = "ans";
 
+	lastVar = name;
+
 	if(ns->lookupVar(name) != Namescope::LookupResult::found)
 	{
 		std::shared_ptr<Value> value(std::make_shared< TypedValue<double> >());
@@ -173,7 +175,7 @@ double Parser::ident()
 			throw std::runtime_error("unknown function");
 		if (lookup == Namescope::LookupResult::wrong_signature)
 			throw std::runtime_error("signature mismatch for function");
-		return ns->getFunc(name)->function(params);
+		return ns->getFunc(name)->function(ns, params);
 	}
 	else
 	{
