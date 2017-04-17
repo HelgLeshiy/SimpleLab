@@ -1,1 +1,1 @@
-#define vector<vector<complex<double>>> Matrix
+typedef double Matrix//vector<vector<complex<double>>> Matrix
