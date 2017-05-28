@@ -25,10 +25,6 @@ public:
 
 private:
 	void getToken();
-	void skipWhite();
-	void match(char c);
-	std::string getName();
-	double getNum();
 
 	bool isaddop(const std::string& s) { return s == "+" || s == "-"; }
 	bool ismulop(const std::string& s) { return s == "*" || s == "/"; }
@@ -36,6 +32,7 @@ private:
 	double expression();
 	double assigment();
 	double term();
+	double power();
 	double factor();
 	double ident();
 	void parseParams(std::vector<std::shared_ptr<Value>>& params);

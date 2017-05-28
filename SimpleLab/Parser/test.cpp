@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 	Namescope *global = new Namescope();
 
 	// Install variables
-	global->installVar(std::make_shared< TypedValue<double> >(3.14), "pi");
+	global->setVar(std::make_shared< TypedValue<double> >(3.141592653589793238462643383279), "pi");
 
 	// Install functions
 	global->installFunction(f_sin, 1, "sin");
@@ -86,6 +86,7 @@ int main(int argc, char **argv)
 	{
 		// Shit happens
 		std::cerr << "Error: " << e.what() << std::endl;
+		return 1;
 	}
 
 	delete global;

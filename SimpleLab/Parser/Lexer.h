@@ -10,7 +10,7 @@
 #include <functional>
 #include <conio.h>
 
-const std::string OPERATORS = ",+-*/=<>!";
+const std::string OPERATORS = ",+-*/=<>!^";
 enum SymType
 {
 	IDENT,

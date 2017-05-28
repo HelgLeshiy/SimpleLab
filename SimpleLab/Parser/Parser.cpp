@@ -91,7 +91,7 @@ double Parser::assigment()
 
 double Parser::term()
 {
-	double ans = factor();
+	double ans = power();
 	
 	while(curTok.sym == OPERATOR && ismulop(curTok.value))
 	{
@@ -107,6 +107,20 @@ double Parser::term()
 		}
 		else
 			throw std::runtime_error("Expected mulop");
+	}
+
+	return ans;
+}
+
+double Parser::power()
+{
+	double ans = factor();
+
+	while (curTok.sym == OPERATOR && curTok.value == "^")
+	{
+		
+		getToken();
+		ans = std::pow(ans, power());
 	}
 
 	return ans;
