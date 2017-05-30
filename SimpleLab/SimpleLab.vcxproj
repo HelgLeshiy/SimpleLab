@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,51 +19,56 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="app.cpp" />
     <ClCompile Include="Functions\Functions.cpp" />
+    <ClCompile Include="guiFuncs.cpp" />
     <ClCompile Include="GUI\buttonsGUI.cpp" />
-    <ClCompile Include="GUI\main.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser\Lexer.cpp" />
     <ClCompile Include="Parser\Namescope.cpp" />
     <ClCompile Include="Parser\Parser.cpp" />
-    <ClCompile Include="Parser\test.cpp" />
+    <ClCompile Include="SpriteFont.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="app.h" />
     <ClInclude Include="Functions\Functions.h" />
+    <ClInclude Include="guiFuncs.h" />
     <ClInclude Include="GUI\hdr.h" />
     <ClInclude Include="Parser\Lexer.h" />
     <ClInclude Include="Parser\Namescope.h" />
     <ClInclude Include="Parser\Parser.h" />
+    <ClInclude Include="SpriteFont.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9E7D3BDF-7F03-4669-8B9B-990A68288B1A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SimpleLab</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
