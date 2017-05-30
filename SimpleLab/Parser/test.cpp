@@ -2,7 +2,9 @@
 #include "Namescope.h"
 #include <cmath>
 #include <memory>
+#include "../Functions/Functions.h"
 
+/*
 // Sin test function for a global namescope
 inline double f_sin(Namescope*, const std::vector<std::shared_ptr<Value>>& args)
 {
@@ -55,6 +57,7 @@ inline double f_rand(Namescope*, const std::vector<std::shared_ptr<Value>>& args
 	// All functions in Simple Lab architecture must return a double value!!!
 	return (rand()%(static_cast<int>(parg2->value) - static_cast<int>(parg1->value))) + parg1->value;
 }
+*/
 
 int main(int argc, char **argv)
 {
@@ -66,9 +69,20 @@ int main(int argc, char **argv)
 
 	// Install functions
 	global->installFunction(f_sin, 1, "sin");
-	global->installFunction(f_print, 1, "print");
-	global->installFunction(f_parse, 1, "parse");
-	global->installFunction(f_rand, 2, "rand");
+	global->installFunction(f_cos, 1, "cos");
+	global->installFunction(f_tan, 1, "tan");
+	global->installFunction(f_ctan, 1, "ctan");
+	global->installFunction(f_sinh, 1, "sinh");
+	global->installFunction(f_cosh, 1, "cosh");
+	global->installFunction(f_tanh, 1, "tanh");
+	global->installFunction(f_ctanh, 1, "ctanh");
+	global->installFunction(f_logn, 1, "logn");
+	global->installFunction(f_log, 2, "log");
+	global->installFunction(f_lengthStr, 1, "strlen");
+	global->installFunction(f_random, 2, "rand");
+	global->installFunction(f_integral, 3, "int");
+	global->installFunction(f_minFunc, 3, "minF");
+	global->installFunction(f_maxFunc, 3, "maxF");
 
 	Parser parser;
 	std::string input;
