@@ -38,9 +38,11 @@ inline double f_parse(Namescope* ns, const std::vector<std::shared_ptr<Value>>& 
 	if(!parg)
 		throw std::runtime_error("argument type mismatch in function print");
 	Parser p;
+	Namescope local(ns);
+	local.setVar(std::make_shared<TypedValue<double>>(10.0), "x");
 
 	// All functions in Simple Lab architecture must return a double value!!!
-	return p.parse(parg->value, ns);
+	return p.parse(parg->value, &local);
 }
 
 // Other test function
