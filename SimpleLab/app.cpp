@@ -1,6 +1,7 @@
 #include "app.h"
 #include <SDL2/SDL_ttf.h>
 #include <sstream>
+#include "Functions\Functions.h"
 
 #define SCR_W 640
 #define SCR_H 480
@@ -34,6 +35,25 @@ void app::init( )
 	SDL_RenderDrawRect( rnd, &txtInp );
 
 	workspace.push_back( "" );
+	global->installFunction( f_sin, 1, "sin" );
+	global->installFunction( f_cos, 1, "cos" );
+	global->installFunction( f_tan, 1, "tan" );
+	global->installFunction( f_ctan, 1, "ctan" );
+	global->installFunction( f_sinh, 1, "sinh" );
+	global->installFunction( f_cosh, 1, "cosh" );
+	global->installFunction( f_tanh, 1, "tanh" );
+	global->installFunction( f_ctanh, 1, "ctanh" );
+	global->installFunction( f_logn, 1, "ln" );
+	global->installFunction( f_log, 2, "log" );
+	global->installFunction( f_lengthStr, 1, "strlen" );
+	global->installFunction( f_random, 2, "rand" );
+	global->installFunction( f_integral, 3, "int" );
+	global->installFunction( f_minFunc, 3, "minF" );
+	global->installFunction( f_maxFunc, 3, "maxF" );
+
+
+	
+
 }
 void app::destroyApp( )
 {
@@ -116,7 +136,17 @@ void app::event( SDL_Event *evt )
 		case SDL_KEYDOWN:
 			if ( evt->key.keysym.sym == SDLK_RETURN )
 			{
-				double result = parser.parse( workspace.back(  ), global );
+				double result;
+				try
+				{
+					result = parser.parse( workspace.back(  ), global );
+				}
+				catch ( std::exception &ex )
+				{
+					workspace.push_back( ex.what(  ) );
+					workspace.emplace_back( "" );
+					break;
+				}
 				std::string varName = parser.getLastVar(  );
 				varName += " = " + dtoa( result );
 				workspace.push_back( varName );
@@ -128,7 +158,16 @@ void app::event( SDL_Event *evt )
 					workspace.pop_front(  );
 				}
 
+
+
 				//text.clear(  );
+			}
+			else if ( evt->key.keysym.sym == SDLK_BACKSPACE )
+			{
+				if ( workspace.back(  ).length(  ) > 0 )
+				{
+					workspace.back(  ).pop_back(  );
+				}
 			}
 			break;
 		case SDL_TEXTINPUT:
