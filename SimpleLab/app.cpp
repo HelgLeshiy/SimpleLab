@@ -3,9 +3,7 @@
 #include <sstream>
 #include "Functions\Functions.h"
 #include "ResourceManager.h"
-
-#define SCR_W 720
-#define SCR_H 480
+#include "prefs.h"
 
 std::string dtoa( double a )
 {
@@ -52,6 +50,7 @@ void app::init( )
 	global->installFunction( f_maxFunc, 3, "maxF" );
 
 	initWidgets();
+	workspace.init(20, 20);
 }
 void app::destroyApp( )
 {
@@ -84,12 +83,7 @@ void app::event( SDL_Event *evt )
 			touchPos.x = x;
 			touchPos.y = y;
 
-			if ( keyboard )
-			{
-				SDL_StopTextInput( );
-				keyboard = false;
-			}
-			else
+			if (!SDL_IsTextInputActive())
 			{
 				SDL_StartTextInput( );
 				keyboard = true;
@@ -168,6 +162,8 @@ void app::loop( )
 			layoutState = LayoutState::IDLE;
 		}
 	}
+
+	workspace.update(1.f);
 }
 
 void app::rend( )
@@ -177,12 +173,7 @@ void app::rend( )
 
 	renderTexture(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Background.png"), rnd, 0, 0, SCR_W, SCR_H);
 
-	int h = 85;
-	for ( auto &line:workspace )
-	{
-		spriteFont.draw( rnd, line, vec2( 2, h ), vec2( 1, 1 ), ColorRGBA8( 255, 255, 0, 255 ) );	//TODO: why -260, spriteFont???
-		h += 32;
-	}
+	workspace.render(rnd, spriteFont);
 
 	for (auto widget : widgets)
 		widget->render(rnd, spriteFont);

@@ -10,15 +10,6 @@
 #include "Workspace.h"
 #include "ResourceManager.h"
 
-const ColorRGBA8 bCols = { 255, 255, 255, 100 };
-const ColorRGBA8 tbCol = { 0  , 0  , 255, 100 };
-const ColorRGBA8 ClosBtCol = { 255, 0, 0, 100 };
-const ColorRGBA8 PrsBtColr = { 128, 128, 128, 100 };
-const ColorRGBA8 PrsClsBtn = { 125, 0, 0, 100 };
-const ColorRGBA8 BlackColr = { 0, 0, 0, 0 };
-
-const float SWIPE_DISTANCE = 100.f;
-
 enum class LayoutState
 {
 	IDLE,
