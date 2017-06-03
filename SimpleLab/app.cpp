@@ -34,7 +34,6 @@ void app::init( )
 
 	SDL_RenderDrawRect( rnd, &txtInp );
 
-	workspace.push_back( "" );
 	global->installFunction( f_sin, 1, "sin" );
 	global->installFunction( f_cos, 1, "cos" );
 	global->installFunction( f_tan, 1, "tan" );
@@ -51,9 +50,7 @@ void app::init( )
 	global->installFunction( f_minFunc, 3, "minF" );
 	global->installFunction( f_maxFunc, 3, "maxF" );
 
-
-	
-
+	initWidgets();
 }
 void app::destroyApp( )
 {
@@ -107,45 +104,24 @@ void app::event( SDL_Event *evt )
 				double result;
 				try
 				{
-					result = parser.parse( workspace.back(  ), global );
+					result = parser.parse( workspace.getLastLine(), global );
 				}
 				catch ( std::exception &ex )
 				{
-					workspace.push_back(ex.what());
-					workspace.emplace_back("");
-					if (workspace.size() > 20)
-					{
-						workspace.pop_front();
-						workspace.pop_front();
-					}
+					workspace.writeLine(ex.what());
 					break;
 				}
 				std::string varName = "  " + parser.getLastVar();
 				varName += " = " + dtoa(result);
-				workspace.push_back(varName);
-				workspace.emplace_back("");
-
-				if ( workspace.size(  ) > 7 )
-				{
-					workspace.pop_front(  );
-					workspace.pop_front(  );
-				}
-			}
-			else if ( evt->key.keysym.sym == SDLK_BACKSPACE )
-			{
-				if ( workspace.back(  ).length(  ) > 0 )
-				{
-					workspace.back(  ).pop_back(  );
-				}
+				workspace.writeLine(varName);
 			}
 			break;
-		case SDL_TEXTINPUT:
-		{
-			std::string inp;
-			workspace.back(  ) += evt->text.text;
-		}
-		break;
 	}
+
+	workspace.onEvent(evt);
+
+	for (auto widget : widgets)
+		widget->onEvent(evt);
 }
 void app::loop( )
 {
@@ -158,11 +134,7 @@ void app::rend( )
 
 	//void buttonDraw( SDL_Renderer *renderer, SpriteFont &spriteFont, const std::string& text, const vec2& pos, const vec2 &dims, const vec2& scaling, const ColorRGBA8& color, const ColorRGBA8 &butCol )
 
-	buttonDraw( rnd, spriteFont, "Undo", vec2(0,0), vec2( 100, 60 ), bCols, tbCol );
-	buttonDraw( rnd, spriteFont, "Redo", vec2(100,0), vec2( 100, 60 ), bCols, tbCol );
-	buttonDraw( rnd, spriteFont, "Cls", vec2(200,0), vec2( 100, 60 ), bCols, tbCol );
-	buttonDraw( rnd, spriteFont, "Save", vec2(300,0), vec2( 100, 60 ), bCols, tbCol );
-	buttonDraw( rnd, spriteFont, "X", vec2(600,0), vec2( 60, 60 ), ClosBtCol, BlackColr );
+	
 
 	int h = 85;
 	for ( auto &line:workspace )
@@ -170,7 +142,39 @@ void app::rend( )
 		spriteFont.draw( rnd, line, vec2( 2, h ), vec2( 1, 1 ), ColorRGBA8( 255, 255, 0, 255 ) );	//TODO: why -260, spriteFont???
 		h += 32;
 	}
+
+	for (auto widget : widgets)
+		widget->render(rnd, spriteFont);
+
 	SDL_RenderPresent( rnd );
+}
+
+void app::initWidgets()
+{
+	std::vector<SimpleButton*> buttons;
+
+	buttons.push_back(new SimpleButton());
+	buttons.back()->init("Undo", tbCol, bCols, PrsBtColr);
+	buttons.back()->setRect(vec2(0, 0), vec2(100, 60));
+
+	buttons.push_back(new SimpleButton());
+	buttons.back()->init("Redo", tbCol, bCols, PrsBtColr);
+	buttons.back()->setRect(vec2(100, 0), vec2(100, 60));
+
+	buttons.push_back(new SimpleButton());
+	buttons.back()->init("Cls", tbCol, bCols, PrsBtColr);
+	buttons.back()->setRect(vec2(200, 0), vec2(100, 60));
+
+	buttons.push_back(new SimpleButton());
+	buttons.back()->init("Save", tbCol, bCols, PrsBtColr);
+	buttons.back()->setRect(vec2(300, 0), vec2(100, 60));
+
+	buttons.push_back(new SimpleButton());
+	buttons.back()->init("X", BlackColr, ClosBtCol, PrsClsBtn);
+	buttons.back()->setRect(vec2(600, 0), vec2(60, 60));
+
+	for(auto button : buttons)
+		widgets.push_back(button);
 }
 
 int app::execute( )

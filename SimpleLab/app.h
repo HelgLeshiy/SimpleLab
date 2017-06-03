@@ -6,6 +6,8 @@
 #include "Parser/Parser.h"
 #include <string>
 #include <list>
+#include "GUI/Widget.h"
+#include "Workspace.h"
 
 const ColorRGBA8 bCols = { 255, 255, 255, 100 };
 const ColorRGBA8 tbCol = { 0  , 0  , 255, 100 };
@@ -27,13 +29,18 @@ private:
 	void loop(  );
 	void rend(  );
 
+	void initWidgets();
+
 	SpriteFont spriteFont;
 	Namescope *global = nullptr;
 	Parser parser;
-
+	Workspace workspace;
 	std::string text;
-	std::list < std::string > workspace;
+	
+
 	bool keyboard = false;
+
+	std::vector<Widget*> widgets;
 
 public:
 	int execute(  );	//Вызывает главный цикл
