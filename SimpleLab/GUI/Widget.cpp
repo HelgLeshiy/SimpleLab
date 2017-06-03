@@ -1,4 +1,5 @@
 #include "Widget.h"
+#include "../guiFuncs.h"
 
 #include "../SpriteFont.h"
 
@@ -81,5 +82,67 @@ void SimpleButton::onEvent(SDL_Event *event)
 
 			m_pressed = false;
 		}
+#endif
+}
+
+void TexturedButton::init(SDL_Texture *releaseTexture, SDL_Texture *pressTexture, std::function<void(void)> cbFunction /*= nullptr*/)
+{
+	m_releaseTexture = releaseTexture;
+	m_pressTexture = pressTexture;
+	m_cbFunction = cbFunction;
+}
+
+void TexturedButton::render(SDL_Renderer *renderer, SpriteFont& spriteFont)
+{
+	if (!m_pressed)
+		renderTexture(m_releaseTexture, renderer, m_position.x, m_position.y, m_dimensions.x, m_dimensions.y);
+	else
+		renderTexture(m_pressTexture, renderer, m_position.x, m_position.y, m_dimensions.x, m_dimensions.y);
+}
+
+void TexturedButton::onEvent(SDL_Event *event)
+{
+	vec2 absPos(0.f, 0.f);
+	if (m_parent != nullptr)
+	{
+		absPos = m_parent->getPosition() + m_parent->getInnerStartPos();
+	}
+	absPos += m_position;
+
+#ifdef _ANDROID_
+	if (event->type == SDL_FINGERDOWN)
+	{
+		int x = event->tfinger.x * SCR_W;
+		int y = event->tfinger.y * SCR_H;
+#else
+	if (event->type == SDL_MOUSEBUTTONDOWN)
+	{
+		int x = event->button.x;
+		int y = event->button.y;
+#endif
+
+		if (x > absPos.x && x < absPos.x + m_dimensions.x && y > absPos.y && y < absPos.y + m_dimensions.y)
+		{
+			if (!m_pressed)
+			{
+				m_pressed = true;
+				if (m_cbFunction)
+					m_cbFunction();
+			}
+		}
+	}
+#ifdef _ANDROID_
+	else if (event->type == SDL_FINGERUP)
+	{
+		int x = event->tfinger.x * SCR_W;
+		int y = event->tfinger.y * SCR_H;
+#else
+	else if (event->type == SDL_MOUSEBUTTONUP)
+	{
+		int x = event->button.x;
+		int y = event->button.y;
+
+		m_pressed = false;
+	}
 #endif
 }

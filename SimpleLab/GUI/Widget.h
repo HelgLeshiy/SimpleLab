@@ -58,3 +58,23 @@ protected:
 
 	bool m_pressed = false;
 };
+
+class TexturedButton : public Widget
+{
+public:
+	TexturedButton(Widget *parent = nullptr) : Widget(parent) { }
+	virtual ~TexturedButton() { }
+
+	void init(SDL_Texture *releaseTexture, SDL_Texture *pressTexture, std::function<void(void)> cbFunction = nullptr);
+	
+	virtual void render(SDL_Renderer *renderer, SpriteFont& spriteFont) override;
+
+	virtual void onEvent(SDL_Event *event) override;
+
+protected:
+	SDL_Texture *m_releaseTexture = nullptr;
+	SDL_Texture *m_pressTexture = nullptr;
+	std::function<void(void)> m_cbFunction;
+
+	bool m_pressed = false;
+};
