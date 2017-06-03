@@ -2,6 +2,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <sstream>
 #include "Functions\Functions.h"
+#include "ResourceManager.h"
 
 #define SCR_W 720
 #define SCR_H 480
@@ -173,8 +174,16 @@ void app::initWidgets()
 	buttons.back()->init("X", BlackColr, ClosBtCol, PrsClsBtn);
 	buttons.back()->setRect(vec2(600, 0), vec2(60, 60));
 
+	TexturedButton *test = new TexturedButton;
+	test->init(ResourceManager::getTexture(rnd, "data/textures/testButtonReleased.png"),
+		ResourceManager::getTexture(rnd, "data/textures/testButtonPressed.png"),
+		[this]() { workspace.writeLine("textured button pressed!"); });
+	test->setRect(vec2(SCR_W/2, SCR_H/2), vec2(120, 60));
+
 	for(auto button : buttons)
 		widgets.push_back(button);
+
+	widgets.push_back(test);
 }
 
 int app::execute( )

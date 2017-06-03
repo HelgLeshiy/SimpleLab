@@ -8,6 +8,7 @@
 #include <list>
 #include "GUI/Widget.h"
 #include "Workspace.h"
+#include "ResourceManager.h"
 
 const ColorRGBA8 bCols = { 255, 255, 255, 100 };
 const ColorRGBA8 tbCol = { 0  , 0  , 255, 100 };
@@ -41,6 +42,8 @@ private:
 	bool keyboard = false;
 
 	std::vector<Widget*> widgets;
+
+
 
 public:
 	int execute(  );	//Вызывает главный цикл
