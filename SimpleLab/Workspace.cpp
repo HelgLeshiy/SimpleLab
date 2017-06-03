@@ -35,7 +35,7 @@ void Workspace::onEvent(SDL_Event *event)
 		{
 			if (m_lines.back().length() > 0)
 			{
-				m_lines.back().pop_back();
+				m_lines.back().erase(m_cursor.getPos() - 1, 1);
 				m_cursor.goTo(m_cursor.getPos() - 1);
 			}
 		}

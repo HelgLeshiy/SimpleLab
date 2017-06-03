@@ -184,37 +184,42 @@ void app::rend( )
 void app::initWidgets()
 {
 	std::vector<TexturedButton*> buttons;
+	int posX = 64;
 
 	// Undo
 	buttons.push_back(new TexturedButton());
 	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_Undo.png"),
 						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_Undo.png"));
-	buttons.back()->setRect(vec2(0, 0), vec2(100, 60));
+	buttons.back()->setRect(vec2(posX, 0), vec2(100, 60));
+	posX += 77;
 
 	// Redo
 	buttons.push_back(new TexturedButton());
 	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_Redo.png"),
 						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_Redo.png"));
-	buttons.back()->setRect(vec2(100, 0), vec2(100, 60));
+	buttons.back()->setRect(vec2(posX, 0), vec2(100, 60));
+	posX += 77;
 
 	// Cls
 	buttons.push_back(new TexturedButton());
 	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_CLS.png"),
 						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_CLS.png"));
-	buttons.back()->setRect(vec2(200, 0), vec2(100, 60));
+	buttons.back()->setRect(vec2(posX, 0), vec2(100, 60));
+	posX += 77;
 
 	// Save
 	buttons.push_back(new TexturedButton());
 	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_Save.png"),
 						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_Save.png"));
-	buttons.back()->setRect(vec2(300, 0), vec2(100, 60));
+	buttons.back()->setRect(vec2(posX, 0), vec2(100, 60));
+	posX += 77;
 
 	// X
 	buttons.push_back(new TexturedButton());
 	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_EXIT.png"),
 						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_EXIT.png"),
 						 [this]() { quitting = true; });
-	buttons.back()->setRect(vec2(SCR_W - 100, 0), vec2(100, 60));
+	buttons.back()->setRect(vec2(SCR_W - 64 - 84, 6), vec2(84, 54));
 
 	layout = new Layout;
 	layout->init(ResourceManager::getTexture(rnd, "data/textures/layout.png"));
