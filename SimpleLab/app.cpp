@@ -3,7 +3,7 @@
 #include <sstream>
 #include "Functions\Functions.h"
 
-#define SCR_W 640
+#define SCR_W 720
 #define SCR_H 480
 
 std::string dtoa( double a )
@@ -82,31 +82,10 @@ void app::event( SDL_Event *evt )
 			int x = evt->button.x;
 			int y = evt->button.y;
 #endif
-			//if ( ( x < 100 ) && ( x > 0 ) && ( y > 0 ) && ( y < 60 ) )
-			//{
-			//	buttonDraw( rnd, "Undo", 0, 0, 100, 60, PrsBtColr, tbCol );
-			//}
-			//else if ( ( x < 200 ) && ( x > 100 ) && ( y > 0 ) && ( y < 60 ) )
-			//{
-			//	buttonDraw( rnd, "Redo", 100, 0, 100, 60, PrsBtColr, tbCol );
-			//}
-			//else if ( ( x < 300 ) && ( x > 200 ) && ( y > 0 ) && ( y < 60 ) )
-			//{
-			//	buttonDraw( rnd, "ClearAll", 200, 0, 100, 60, PrsBtColr, tbCol );
-			//}
-			//else if ( ( x < 400 ) && ( x > 300 ) && ( y > 0 ) && ( y < 60 ) )
-			//{
-			//	buttonDraw( rnd, "Save", 300, 0, 100, 60, PrsBtColr, tbCol );
-			//}
 			if ( x > 600 && y < 60 )
 			{
-				//buttonDraw( rnd, "X", 600, 0, 60, 60, PrsClsBtn, BlackColr );
 				quitting = true;
 			}
-			//else if ( ( x < 60 ) && ( x > 0 ) && ( y > 1088 ) && ( y < 1027 ) )
-			//{
-			//	buttonDraw( rnd, "0", 0, 1088, 59, 60, PrsBtColr, tbCol );
-			//}
 
 			if ( keyboard )
 			{
@@ -122,17 +101,6 @@ void app::event( SDL_Event *evt )
 
 			break;
 		}
-		//case SDL_FINGERUP:
-		//{
-		//	buttonDraw( rnd, "Undo", 0, 0, 100, 60, bCols, tbCol );
-		//	buttonDraw( rnd, "Redo", 100, 0, 100, 60, bCols, tbCol );
-		//	buttonDraw( rnd, "ClearAll", 200, 0, 100, 60, bCols, tbCol );
-		//	buttonDraw( rnd, "Save", 300, 0, 100, 60, bCols, tbCol );
-		//	//buttonDraw( rnd, "Load", 400, 0, 100, 60, bCols, tbCol );
-		//	//buttonDraw( rnd, "GraphOut", 500, 0, 100, 60, bCols, tbCol );
-		//	buttonDraw( rnd, "X", 660, 0, 60, 60, ClosBtCol, bCols );
-		//}
-		//break;
 		case SDL_KEYDOWN:
 			if ( evt->key.keysym.sym == SDLK_RETURN )
 			{
@@ -143,24 +111,25 @@ void app::event( SDL_Event *evt )
 				}
 				catch ( std::exception &ex )
 				{
-					workspace.push_back( ex.what(  ) );
-					workspace.emplace_back( "" );
+					workspace.push_back(ex.what());
+					workspace.emplace_back("");
+					if (workspace.size() > 20)
+					{
+						workspace.pop_front();
+						workspace.pop_front();
+					}
 					break;
 				}
-				std::string varName = parser.getLastVar(  );
-				varName += " = " + dtoa( result );
-				workspace.push_back( varName );
-				workspace.emplace_back( "" );
+				std::string varName = "  " + parser.getLastVar();
+				varName += " = " + dtoa(result);
+				workspace.push_back(varName);
+				workspace.emplace_back("");
 
 				if ( workspace.size(  ) > 7 )
 				{
 					workspace.pop_front(  );
 					workspace.pop_front(  );
 				}
-
-
-
-				//text.clear(  );
 			}
 			else if ( evt->key.keysym.sym == SDLK_BACKSPACE )
 			{
@@ -173,17 +142,9 @@ void app::event( SDL_Event *evt )
 		case SDL_TEXTINPUT:
 		{
 			std::string inp;
-			//workspace.emplace_back( evt->text.text );
 			workspace.back(  ) += evt->text.text;
 		}
 		break;
-		//case SDL_TEXTEDITING:
-		{
-			//composition = event.edit.text;
-			//cursor = event.edit.start;
-			//selection_len = event.edit.length;
-		}
-		//break;
 	}
 }
 void app::loop( )
@@ -201,13 +162,13 @@ void app::rend( )
 	buttonDraw( rnd, spriteFont, "Redo", vec2(100,0), vec2( 100, 60 ), bCols, tbCol );
 	buttonDraw( rnd, spriteFont, "Cls", vec2(200,0), vec2( 100, 60 ), bCols, tbCol );
 	buttonDraw( rnd, spriteFont, "Save", vec2(300,0), vec2( 100, 60 ), bCols, tbCol );
-	buttonDraw( rnd, spriteFont, "X", vec2(400,0), vec2( 60, 60 ), ClosBtCol, BlackColr );
+	buttonDraw( rnd, spriteFont, "X", vec2(600,0), vec2( 60, 60 ), ClosBtCol, BlackColr );
 
-	int h = 60;
+	int h = 85;
 	for ( auto &line:workspace )
 	{
 		spriteFont.draw( rnd, line, vec2( 2, h ), vec2( 1, 1 ), ColorRGBA8( 255, 255, 0, 255 ) );	//TODO: why -260, spriteFont???
-		h += 60;
+		h += 32;
 	}
 	SDL_RenderPresent( rnd );
 }
