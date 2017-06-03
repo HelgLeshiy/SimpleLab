@@ -175,9 +175,7 @@ void app::rend( )
 	SDL_SetRenderDrawColor( rnd, 0, 0, 0, 255 );
 	SDL_RenderClear( rnd );
 
-	//void buttonDraw( SDL_Renderer *renderer, SpriteFont &spriteFont, const std::string& text, const vec2& pos, const vec2 &dims, const vec2& scaling, const ColorRGBA8& color, const ColorRGBA8 &butCol )
-
-	
+	renderTexture(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Background.png"), rnd, 0, 0, SCR_W, SCR_H);
 
 	int h = 85;
 	for ( auto &line:workspace )
@@ -194,27 +192,38 @@ void app::rend( )
 
 void app::initWidgets()
 {
-	std::vector<SimpleButton*> buttons;
+	std::vector<TexturedButton*> buttons;
 
-	buttons.push_back(new SimpleButton());
-	buttons.back()->init("Undo", tbCol, bCols, PrsBtColr);
+	// Undo
+	buttons.push_back(new TexturedButton());
+	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_Undo.png"),
+						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_Undo.png"));
 	buttons.back()->setRect(vec2(0, 0), vec2(100, 60));
 
-	buttons.push_back(new SimpleButton());
-	buttons.back()->init("Redo", tbCol, bCols, PrsBtColr);
+	// Redo
+	buttons.push_back(new TexturedButton());
+	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_Redo.png"),
+						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_Redo.png"));
 	buttons.back()->setRect(vec2(100, 0), vec2(100, 60));
 
-	buttons.push_back(new SimpleButton());
-	buttons.back()->init("Cls", tbCol, bCols, PrsBtColr);
+	// Cls
+	buttons.push_back(new TexturedButton());
+	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_CLS.png"),
+						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_CLS.png"));
 	buttons.back()->setRect(vec2(200, 0), vec2(100, 60));
 
-	buttons.push_back(new SimpleButton());
-	buttons.back()->init("Save", tbCol, bCols, PrsBtColr);
+	// Save
+	buttons.push_back(new TexturedButton());
+	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_Save.png"),
+						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_Save.png"));
 	buttons.back()->setRect(vec2(300, 0), vec2(100, 60));
 
-	buttons.push_back(new SimpleButton());
-	buttons.back()->init("X", BlackColr, ClosBtCol, PrsClsBtn, [this]() { quitting = true; });
-	buttons.back()->setRect(vec2(600, 0), vec2(60, 60));
+	// X
+	buttons.push_back(new TexturedButton());
+	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_EXIT.png"),
+						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_EXIT.png"),
+						 [this]() { quitting = true; });
+	buttons.back()->setRect(vec2(SCR_W - 100, 0), vec2(100, 60));
 
 	layout = new Layout;
 	layout->init(ResourceManager::getTexture(rnd, "data/textures/layout.png"));
@@ -223,8 +232,8 @@ void app::initWidgets()
 
 	TexturedButton *test = new TexturedButton(layout);
 	test->init(ResourceManager::getTexture(rnd, "data/textures/testButtonReleased.png"),
-		ResourceManager::getTexture(rnd, "data/textures/testButtonPressed.png"),
-		[this]() { workspace.writeLine("textured button pressed!"); });
+			   ResourceManager::getTexture(rnd, "data/textures/testButtonPressed.png"),
+			   [this]() { workspace.writeLine("textured button pressed!"); });
 	test->setRect(vec2(0.f, 0.f), vec2(120, 60));
 
 	for(auto button : buttons)
