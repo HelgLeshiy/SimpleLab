@@ -23,7 +23,7 @@ SDL_Texture* TextureCache::getTexture(SDL_Renderer *renderer, const std::string&
 		SDL_Surface *temp = IMG_Load(textureName.c_str());
 		if (!temp)
 			throw std::runtime_error(std::string(SDL_GetError()));
-
+		SDL_SetColorKey(temp, 1, 0xFFFFFF);
 		SDL_Texture *newTexture = SDL_CreateTextureFromSurface(renderer, temp);
 		m_textures.insert(std::make_pair(textureName, newTexture));
 		SDL_FreeSurface(temp);
