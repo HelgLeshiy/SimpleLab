@@ -19,6 +19,7 @@ public:
 
 	void init( SDL_Renderer *renderer, const std::string& fontSheetFile, int rows, int columns );
 	void draw( SDL_Renderer *renderer, const std::string& text, const vec2& pos, const vec2& scaling, const ColorRGBA8& color, FontAlign align = FontAlign::LEFT );
+	void FontMask( SDL_Renderer *rend, std::string fontPath, int h, int w, SDL_Color colr );
 	int getFontHeight() const { return m_symbHeight; }
 
 private:
