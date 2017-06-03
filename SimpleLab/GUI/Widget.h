@@ -78,3 +78,19 @@ protected:
 
 	bool m_pressed = false;
 };
+
+class Layout : public Widget
+{
+public:
+	Layout(Widget *parent = nullptr) : Widget(parent) { }
+	virtual ~Layout() { }
+
+	void init(SDL_Texture *texture);
+
+	virtual void render(SDL_Renderer *renderer, SpriteFont& spriteFont) override;
+
+	virtual void onEvent(SDL_Event *event) override;
+
+protected:
+	SDL_Texture *m_texture = nullptr;
+};

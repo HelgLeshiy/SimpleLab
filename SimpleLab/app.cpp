@@ -80,10 +80,9 @@ void app::event( SDL_Event *evt )
 			int x = evt->button.x;
 			int y = evt->button.y;
 #endif
-			if ( x > 600 && y < 60 )
-			{
-				quitting = true;
-			}
+			touch = true;
+			touchPos.x = x;
+			touchPos.y = y;
 
 			if ( keyboard )
 			{
@@ -99,6 +98,30 @@ void app::event( SDL_Event *evt )
 
 			break;
 		}
+#ifdef _ANDROID_
+		case SDL_FINGERUP:
+		{
+			int x = evt->tfinger.x * SCR_W;
+			int y = evt->tfinger.y * SCR_H;
+#else
+		case SDL_MOUSEBUTTONUP:
+		{
+			int x = evt->button.x;
+			int y = evt->button.y;
+#endif
+			touch = false;
+			if (touchPos.x - x > SWIPE_DISTANCE && layoutState == LayoutState::IDLE && layout->getPosition().x > SCR_W - layout->getDimensions().x / 2)
+			{
+				layoutState = LayoutState::SWIPE_LEFT;
+				swipe = 0.f;
+			}
+			else if (x - touchPos.x > SWIPE_DISTANCE && layoutState == LayoutState::IDLE && layout->getPosition().x < SCR_W - layout->getDimensions().x / 2)
+			{
+				layoutState = LayoutState::SWIPE_RIGHT;
+				swipe = 0.f;
+			}
+		}
+		break;
 		case SDL_KEYDOWN:
 			if ( evt->key.keysym.sym == SDLK_RETURN )
 			{
@@ -124,10 +147,29 @@ void app::event( SDL_Event *evt )
 	for (auto widget : widgets)
 		widget->onEvent(evt);
 }
+
 void app::loop( )
 {
-
+	if (layoutState == LayoutState::SWIPE_LEFT)
+	{
+		layout->move(vec2(-10.f, 0.f));
+		if (layout->getPosition().x < SCR_W - layout->getDimensions().x)
+		{
+			layout->setRect(vec2(SCR_W - layout->getDimensions().x, 0.f), layout->getDimensions());
+			layoutState = LayoutState::IDLE;
+		}
+	}
+	else if (layoutState == LayoutState::SWIPE_RIGHT)
+	{
+		layout->move(vec2(10.f, 0.f));
+		if (layout->getPosition().x > SCR_W)
+		{
+			layout->setRect(vec2(SCR_W, 0.f), layout->getDimensions());
+			layoutState = LayoutState::IDLE;
+		}
+	}
 }
+
 void app::rend( )
 {
 	SDL_SetRenderDrawColor( rnd, 0, 0, 0, 255 );
@@ -171,18 +213,24 @@ void app::initWidgets()
 	buttons.back()->setRect(vec2(300, 0), vec2(100, 60));
 
 	buttons.push_back(new SimpleButton());
-	buttons.back()->init("X", BlackColr, ClosBtCol, PrsClsBtn);
+	buttons.back()->init("X", BlackColr, ClosBtCol, PrsClsBtn, [this]() { quitting = true; });
 	buttons.back()->setRect(vec2(600, 0), vec2(60, 60));
 
-	TexturedButton *test = new TexturedButton;
+	layout = new Layout;
+	layout->init(ResourceManager::getTexture(rnd, "data/textures/layout.png"));
+	layout->setInnerStartPosition(vec2(10, 10));
+	layout->setRect(vec2(SCR_W, 0), vec2(200, SCR_H));
+
+	TexturedButton *test = new TexturedButton(layout);
 	test->init(ResourceManager::getTexture(rnd, "data/textures/testButtonReleased.png"),
 		ResourceManager::getTexture(rnd, "data/textures/testButtonPressed.png"),
 		[this]() { workspace.writeLine("textured button pressed!"); });
-	test->setRect(vec2(SCR_W/2, SCR_H/2), vec2(120, 60));
+	test->setRect(vec2(0.f, 0.f), vec2(120, 60));
 
 	for(auto button : buttons)
 		widgets.push_back(button);
 
+	widgets.push_back(layout);
 	widgets.push_back(test);
 }
 

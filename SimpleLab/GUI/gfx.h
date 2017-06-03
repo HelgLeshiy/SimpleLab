@@ -26,3 +26,8 @@ static vec2 operator+ (const vec2& lhs, const vec2& rhs)
 	vec2 res(lhs.x + rhs.x, lhs.y + rhs.y);
 	return res;
 }
+
+static float distance(const vec2& a, const vec2& b)
+{
+	return std::sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
+}

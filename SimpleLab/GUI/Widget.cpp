@@ -94,10 +94,16 @@ void TexturedButton::init(SDL_Texture *releaseTexture, SDL_Texture *pressTexture
 
 void TexturedButton::render(SDL_Renderer *renderer, SpriteFont& spriteFont)
 {
+	vec2 absPos(0.f, 0.f);
+	if (m_parent != nullptr)
+	{
+		absPos = m_parent->getPosition() + m_parent->getInnerStartPos();
+	}
+	absPos += m_position;
 	if (!m_pressed)
-		renderTexture(m_releaseTexture, renderer, m_position.x, m_position.y, m_dimensions.x, m_dimensions.y);
+		renderTexture(m_releaseTexture, renderer, absPos.x, absPos.y, m_dimensions.x, m_dimensions.y);
 	else
-		renderTexture(m_pressTexture, renderer, m_position.x, m_position.y, m_dimensions.x, m_dimensions.y);
+		renderTexture(m_pressTexture, renderer, absPos.x, absPos.y, m_dimensions.x, m_dimensions.y);
 }
 
 void TexturedButton::onEvent(SDL_Event *event)
@@ -145,4 +151,19 @@ void TexturedButton::onEvent(SDL_Event *event)
 		m_pressed = false;
 	}
 #endif
+}
+
+void Layout::init(SDL_Texture *texture)
+{
+	m_texture = texture;
+}
+
+void Layout::render(SDL_Renderer *renderer, SpriteFont& spriteFont)
+{
+	renderTexture(m_texture, renderer, m_position.x, m_position.y, m_dimensions.x, m_dimensions.y);
+}
+
+void Layout::onEvent(SDL_Event *event)
+{
+	// Empty
 }

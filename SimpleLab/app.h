@@ -17,6 +17,15 @@ const ColorRGBA8 PrsBtColr = { 128, 128, 128, 100 };
 const ColorRGBA8 PrsClsBtn = { 125, 0, 0, 100 };
 const ColorRGBA8 BlackColr = { 0, 0, 0, 0 };
 
+const float SWIPE_DISTANCE = 100.f;
+
+enum class LayoutState
+{
+	IDLE,
+	SWIPE_LEFT,
+	SWIPE_RIGHT
+};
+
 class app
 {
 private:
@@ -38,6 +47,11 @@ private:
 	Workspace workspace;
 	std::string text;
 	
+	LayoutState layoutState = LayoutState::IDLE;
+	float swipe = 0.f;
+	bool touch = false;
+	vec2 touchPos;
+	Layout *layout = nullptr;
 
 	bool keyboard = false;
 
