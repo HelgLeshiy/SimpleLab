@@ -52,3 +52,32 @@ void SpriteFont::draw( SDL_Renderer *renderer, const std::string& text, const ve
 		SDL_RenderCopy( renderer, m_texture, &srcRect, &dstRect );
 	}
 }
+
+void SpriteFont::FontMask( SDL_Renderer *rend, std::string fontPath, int h, int w, SDL_Color colr )
+{
+	//временно
+	colr.a = 255;
+	colr.b = 255;
+	colr.g = 255;
+	colr.r = 255;
+
+	char *strToSurf = nullptr;
+	TTF_Font *fnt = TTF_OpenFont( fontPath.c_str( ), h );
+	SDL_Surface *txsrf = nullptr;
+	char asciiSym = 0;
+	int j = 0;
+	for ( int i = 0; i < 16; i++, asciiSym++ )
+	{
+		for ( j = 0; j < 16; j++, asciiSym++ )
+		{
+			strToSurf += asciiSym;
+		}
+		j = 0;
+		txsrf = TTF_RenderText_Solid( fnt, strToSurf, colr );
+		strToSurf = 0;
+	}
+	SDL_Texture *texWithFont = SDL_CreateTextureFromSurface( rend, txsrf );
+	//IMG_SavePNG( txsrf, targetPath.c_str( ) );
+	m_texture = texWithFont;
+	SDL_FreeSurface( txsrf );
+}
