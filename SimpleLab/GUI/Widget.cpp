@@ -137,7 +137,6 @@ bool TexturedButton::onEvent(SDL_Event *event)
 		int x = event->button.x;
 		int y = event->button.y;
 #endif
-
 		if (x > absPos.x && x < absPos.x + m_dimensions.x && y > absPos.y && y < absPos.y + m_dimensions.y)
 		{
 			if (!m_pressed)
@@ -198,6 +197,7 @@ bool Layout::onEvent(SDL_Event *event)
 		int dy = event->motion.yrel;
 		int x = event->button.x;
 		int y = event->button.y;
+#endif
 
 		if (m_pressed)
 			if (x > absPos.x && x < absPos.x + m_dimensions.x && y > absPos.y && y < absPos.y + m_dimensions.y)
@@ -206,7 +206,6 @@ bool Layout::onEvent(SDL_Event *event)
 				return true;
 			}
 	}
-#endif
 
 #ifdef _ANDROID_
 	if (event->type == SDL_FINGERDOWN)
