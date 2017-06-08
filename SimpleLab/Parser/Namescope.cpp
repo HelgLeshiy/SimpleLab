@@ -24,11 +24,12 @@ Namescope::LookupResult Namescope::lookupVar(std::string name) const
     return LookupResult::not_found;
 }
 
-void Namescope::installFunction(std::function<double(Namescope*, const std::vector<std::shared_ptr<Value>>&)> f, int argnum, std::string name)
+void Namescope::installFunction(std::function<double(Namescope*, const std::vector<std::shared_ptr<Value>>&)> f, int argnum, const std::string& argTypes, std::string name)
 {
     InstalledFunction* pf = new InstalledFunction;
     pf->function = f;
     pf->argnum = argnum;
+	pf->argTypes = argTypes;
     functions.insert(make_pair(name, std::shared_ptr<InstalledFunction>(pf)));
 }
 

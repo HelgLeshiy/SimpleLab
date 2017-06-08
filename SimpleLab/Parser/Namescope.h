@@ -34,11 +34,13 @@ class Namescope;
 *
 *	field function: real function pointer with a vector of arguments
 *	field argnum: the argument count
+*	field argTypes: the argument types if "printf" style
 **/
 struct InstalledFunction
 {
 	std::function<double(Namescope*, const std::vector<std::shared_ptr<Value>>&)> function;
     int argnum;
+	std::string argTypes;
 };
 
 
@@ -90,7 +92,7 @@ public:
 	*	param	argnum	The number of agruments
 	*	param	name	The name of this function
 	**/
-    void installFunction(std::function<double(Namescope*, const std::vector<std::shared_ptr<Value>>&)> f, int argnum, std::string name);
+    void installFunction(std::function<double(Namescope*, const std::vector<std::shared_ptr<Value>>&)> f, int argnum, const std::string& argTypes, std::string name);
 
 	/**
 	*	Sets a variable in this namescope
@@ -115,6 +117,9 @@ public:
 	*	return	The value pointer
 	**/
     std::shared_ptr<Value> getVar(std::string name) const;
+
+	std::map<std::string, std::shared_ptr<InstalledFunction>>::const_iterator functionsBegin() const { return functions.cbegin(); }
+	std::map<std::string, std::shared_ptr<InstalledFunction>>::const_iterator functionsEnd() const { return functions.cend(); }
 
 private:
     const Namescope* p_outer;

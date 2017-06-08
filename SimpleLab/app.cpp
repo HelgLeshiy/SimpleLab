@@ -1,6 +1,8 @@
 #include "app.h"
 #include <SDL2/SDL_ttf.h>
 #include <sstream>
+#include <fstream>
+#include <algorithm>
 #include "Functions\Functions.h"
 #include "ResourceManager.h"
 #include "prefs.h"
@@ -33,21 +35,21 @@ void app::init( )
 
 	SDL_RenderDrawRect( rnd, &txtInp );
 
-	global->installFunction( f_sin, 1, "sin" );
-	global->installFunction( f_cos, 1, "cos" );
-	global->installFunction( f_tan, 1, "tan" );
-	global->installFunction( f_ctan, 1, "ctan" );
-	global->installFunction( f_sinh, 1, "sinh" );
-	global->installFunction( f_cosh, 1, "cosh" );
-	global->installFunction( f_tanh, 1, "tanh" );
-	global->installFunction( f_ctanh, 1, "ctanh" );
-	global->installFunction( f_logn, 1, "ln" );
-	global->installFunction( f_log, 2, "log" );
-	global->installFunction( f_lengthStr, 1, "strlen" );
-	global->installFunction( f_random, 2, "rand" );
-	global->installFunction( f_integral, 3, "int" );
-	global->installFunction( f_minFunc, 3, "minF" );
-	global->installFunction( f_maxFunc, 3, "maxF" );
+	global->installFunction( f_sin, 1, "d", "sin" );
+	global->installFunction( f_cos, 1, "d", "cos" );
+	global->installFunction( f_tan, 1, "d", "tan" );
+	global->installFunction( f_ctan, 1, "d", "ctan" );
+	global->installFunction( f_sinh, 1, "d", "sinh" );
+	global->installFunction( f_cosh, 1, "d", "cosh" );
+	global->installFunction( f_tanh, 1, "d", "tanh" );
+	global->installFunction( f_ctanh, 1, "d", "ctanh" );
+	global->installFunction( f_logn, 1, "d", "ln" );
+	global->installFunction( f_log, 2, "dd", "log" );
+	global->installFunction( f_lengthStr, 1, "s", "strlen" );
+	global->installFunction( f_random, 2, "dd", "rand" );
+	global->installFunction( f_integral, 3, "sdd", "int" );
+	global->installFunction( f_minFunc, 3, "sdd", "minF" );
+	global->installFunction( f_maxFunc, 3, "sdd", "maxF" );
 
 	initWidgets();
 	workspace.init(20, 20);
@@ -61,6 +63,7 @@ void app::destroyApp( )
 	IMG_Quit(  );
 	SDL_Quit(  );
 }
+
 void app::event( SDL_Event *evt )
 {
 	switch ( evt->type )
@@ -136,10 +139,10 @@ void app::event( SDL_Event *evt )
 			break;
 	}
 
-	workspace.onEvent(evt);
+	for (auto widget = widgets.rbegin(); widget != widgets.rend(); ++widget)
+		if (widget->first->onEvent(evt)) return;
 
-	for (auto widget : widgets)
-		widget->onEvent(evt);
+	workspace.onEvent(evt);
 }
 
 void app::loop( )
@@ -176,7 +179,7 @@ void app::rend( )
 	workspace.render(rnd, spriteFont);
 
 	for (auto widget : widgets)
-		widget->render(rnd, spriteFont);
+		widget.first->render(rnd, spriteFont);
 
 	SDL_RenderPresent( rnd );
 }
@@ -226,17 +229,41 @@ void app::initWidgets()
 	layout->setInnerStartPosition(vec2(10, 10));
 	layout->setRect(vec2(SCR_W, 0), vec2(200, SCR_H));
 
-	TexturedButton *test = new TexturedButton(layout);
-	test->init(ResourceManager::getTexture(rnd, "data/textures/testButtonReleased.png"),
-			   ResourceManager::getTexture(rnd, "data/textures/testButtonPressed.png"),
-			   [this]() { workspace.writeLine("textured button pressed!"); });
-	test->setRect(vec2(0.f, 0.f), vec2(120, 60));
+	for (auto button : buttons)
+		widgets.push_back(std::make_pair(button, 0.f));
 
-	for(auto button : buttons)
-		widgets.push_back(button);
+	widgets.push_back(std::make_pair(layout, 1.f));
 
-	widgets.push_back(layout);
-	widgets.push_back(test);
+	float y = 0;
+	for (auto it = global->functionsBegin(); it != global->functionsEnd(); ++it)
+	{
+		TexturedButton *button = new TexturedButton(layout);
+		button->setText(it->first, ColorRGBA8(43, 200, 200, 255));
+		button->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed.png"),
+					 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed.png"),
+		[this, it]() {
+			std::string autoWriteLine = it->first + "(";
+			size_t dCurPos = autoWriteLine.length();
+			bool firstString = false;
+			for (int i = 0; i < it->second->argnum - 1; ++i)
+			{
+				if (it->second->argTypes[i] == 's')
+				{
+					autoWriteLine += "\"\"";
+					if (i == 0) firstString = true;
+				}
+				autoWriteLine += ", ";
+			}
+			autoWriteLine += ')';
+			workspace.insertToCursor(autoWriteLine);
+			workspace.shiftCursor(firstString ? dCurPos + 1 : dCurPos);
+		});
+		button->setRect(vec2(0.f, y), vec2(180, 60));
+		y += 64;
+		widgets.push_back(std::make_pair(button, 2.f));
+	}
+
+	std::stable_sort(widgets.begin(), widgets.end(), [](const std::pair<Widget*, float>& a, const std::pair<Widget*, float>& b) { return a.second < b.second; });
 }
 
 int app::execute( )
@@ -249,7 +276,7 @@ int app::execute( )
 			event ( &evt );
 		loop(  );	//Логика
 		rend(  );	//Отрисовка
-		SDL_Delay( 50 );
+		SDL_Delay( 10 );
 	}
 	destroyApp(  );
 	return 0;

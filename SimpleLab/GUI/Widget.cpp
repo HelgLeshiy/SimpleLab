@@ -38,7 +38,7 @@ void SimpleButton::render(SDL_Renderer *renderer, SpriteFont& spriteFont)
 	spriteFont.draw(renderer, m_text, vec2(absPos.x + m_dimensions.x / 2, absPos.y + m_dimensions.y / 2 - spriteFont.getFontHeight() / 2), vec2(1.f, 1.f), m_textColor, FontAlign::CENTERED);
 }
 
-void SimpleButton::onEvent(SDL_Event *event)
+bool SimpleButton::onEvent(SDL_Event *event)
 {
 	vec2 absPos(0.f, 0.f);
 	if (m_parent != nullptr)
@@ -66,6 +66,7 @@ void SimpleButton::onEvent(SDL_Event *event)
 				m_pressed = true;
 				if(m_cbFunction)
 					m_cbFunction();
+				return true;
 			}
 		}
 	}
@@ -83,6 +84,7 @@ void SimpleButton::onEvent(SDL_Event *event)
 			m_pressed = false;
 		}
 #endif
+	return false;
 }
 
 void TexturedButton::init(SDL_Texture *releaseTexture, SDL_Texture *pressTexture, std::function<void(void)> cbFunction /*= nullptr*/)
@@ -90,6 +92,12 @@ void TexturedButton::init(SDL_Texture *releaseTexture, SDL_Texture *pressTexture
 	m_releaseTexture = releaseTexture;
 	m_pressTexture = pressTexture;
 	m_cbFunction = cbFunction;
+}
+
+void TexturedButton::setText(const std::string & text, const ColorRGBA8 & textColor)
+{
+	m_text = text;
+	m_textColor = textColor;
 }
 
 void TexturedButton::render(SDL_Renderer *renderer, SpriteFont& spriteFont)
@@ -104,9 +112,12 @@ void TexturedButton::render(SDL_Renderer *renderer, SpriteFont& spriteFont)
 		renderTexture(m_releaseTexture, renderer, absPos.x, absPos.y, m_dimensions.x, m_dimensions.y);
 	else
 		renderTexture(m_pressTexture, renderer, absPos.x, absPos.y, m_dimensions.x, m_dimensions.y);
+
+	if(!m_text.empty())
+		spriteFont.draw(renderer, m_text, vec2(absPos.x + m_dimensions.x / 2, absPos.y + m_dimensions.y / 2 - spriteFont.getFontHeight() / 2), vec2(1.f, 1.f), m_textColor, FontAlign::CENTERED);
 }
 
-void TexturedButton::onEvent(SDL_Event *event)
+bool TexturedButton::onEvent(SDL_Event *event)
 {
 	vec2 absPos(0.f, 0.f);
 	if (m_parent != nullptr)
@@ -134,6 +145,7 @@ void TexturedButton::onEvent(SDL_Event *event)
 				m_pressed = true;
 				if (m_cbFunction)
 					m_cbFunction();
+				return true;
 			}
 		}
 	}
@@ -147,10 +159,10 @@ void TexturedButton::onEvent(SDL_Event *event)
 	{
 		int x = event->button.x;
 		int y = event->button.y;
-
+#endif
 		m_pressed = false;
 	}
-#endif
+	return false;
 }
 
 void Layout::init(SDL_Texture *texture)
@@ -163,7 +175,69 @@ void Layout::render(SDL_Renderer *renderer, SpriteFont& spriteFont)
 	renderTexture(m_texture, renderer, m_position.x, m_position.y, m_dimensions.x, m_dimensions.y);
 }
 
-void Layout::onEvent(SDL_Event *event)
+bool Layout::onEvent(SDL_Event *event)
 {
-	// Empty
+	vec2 absPos(0.f, 0.f);
+	if (m_parent != nullptr)
+	{
+		absPos = m_parent->getPosition() + m_parent->getInnerStartPos();
+	}
+	absPos += m_position;
+
+#ifdef _ANDROID_
+	if (event->type == SDL_FINGERMOTION)
+	{
+		int dx = event->tfinger.dx * SCR_W;
+		int dy = event->tfinger.dy * SCR_H;
+		int x = event->tfinger.x * SCR_W;
+		int y = event->tfinger.y * SCR_H;
+#else
+	if (event->type == SDL_MOUSEMOTION)
+	{
+		int dx = event->motion.xrel;
+		int dy = event->motion.yrel;
+		int x = event->button.x;
+		int y = event->button.y;
+
+		if (m_pressed)
+			if (x > absPos.x && x < absPos.x + m_dimensions.x && y > absPos.y && y < absPos.y + m_dimensions.y)
+			{
+				m_innerStartPos.y += dy;
+				return true;
+			}
+	}
+#endif
+
+#ifdef _ANDROID_
+	if (event->type == SDL_FINGERDOWN)
+	{
+		int x = event->tfinger.x * SCR_W;
+		int y = event->tfinger.y * SCR_H;
+#else
+	if (event->type == SDL_MOUSEBUTTONDOWN)
+	{
+		int x = event->button.x;
+		int y = event->button.y;
+#endif
+
+		if (x > absPos.x && x < absPos.x + m_dimensions.x && y > absPos.y && y < absPos.y + m_dimensions.y)
+		{
+			m_pressed = true;
+			return true;
+		}
+	}
+#ifdef _ANDROID_
+	else if (event->type == SDL_FINGERUP)
+	{
+		int x = event->tfinger.x * SCR_W;
+		int y = event->tfinger.y * SCR_H;
+#else
+	else if (event->type == SDL_MOUSEBUTTONUP)
+	{
+		int x = event->button.x;
+		int y = event->button.y;
+#endif
+		m_pressed = false;
+	}
+	return false;
 }

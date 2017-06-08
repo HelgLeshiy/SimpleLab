@@ -12,10 +12,14 @@ public:
 
 	void init(int symbolWidth, int symbolHeight);
 	void writeLine(const std::string& text = "");
+	void insertToCursor(const std::string& text);
 	void onEvent(SDL_Event *event);
 	void update(float deltaTime);
 	void render(SDL_Renderer *renderer, SpriteFont& font);
 	const std::string& getLastLine() const;
+	std::string& getLastLine();
+
+	void shiftCursor(int n);
 
 	std::list < std::string >::const_iterator begin() const { return m_lines.begin(); }
 	std::list < std::string >::const_iterator end() const { return m_lines.end(); }
