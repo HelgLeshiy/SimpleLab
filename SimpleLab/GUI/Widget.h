@@ -15,7 +15,7 @@ public:
 
 	virtual void render(SDL_Renderer *renderer, SpriteFont& spriteFont) = 0;
 
-	virtual void onEvent(SDL_Event *event) { }
+	virtual bool onEvent(SDL_Event *event) { return false; }
 	virtual void onUpdate(float deltaTime) { }
 
 	void setRect(const vec2& pos, const vec2& dims) { m_position = pos; m_dimensions = dims; }
@@ -46,7 +46,7 @@ public:
 
 	virtual void render(SDL_Renderer *renderer, SpriteFont& spriteFont) override;
 
-	virtual void onEvent(SDL_Event *event) override;
+	virtual bool onEvent(SDL_Event *event) override;
 
 protected:
 	std::string m_text;
@@ -59,17 +59,18 @@ protected:
 	bool m_pressed = false;
 };
 
-class TexturedButton : public Widget
+class TexturedButton : public SimpleButton
 {
 public:
-	TexturedButton(Widget *parent = nullptr) : Widget(parent) { }
+	TexturedButton(Widget *parent = nullptr) : SimpleButton(parent) { }
 	virtual ~TexturedButton() { }
 
 	void init(SDL_Texture *releaseTexture, SDL_Texture *pressTexture, std::function<void(void)> cbFunction = nullptr);
-	
+	void setText(const std::string& text, const ColorRGBA8& textColor);
+
 	virtual void render(SDL_Renderer *renderer, SpriteFont& spriteFont) override;
 
-	virtual void onEvent(SDL_Event *event) override;
+	virtual bool onEvent(SDL_Event *event) override;
 
 protected:
 	SDL_Texture *m_releaseTexture = nullptr;
@@ -89,8 +90,9 @@ public:
 
 	virtual void render(SDL_Renderer *renderer, SpriteFont& spriteFont) override;
 
-	virtual void onEvent(SDL_Event *event) override;
+	virtual bool onEvent(SDL_Event *event) override;
 
 protected:
 	SDL_Texture *m_texture = nullptr;
+	bool m_pressed = false;
 };

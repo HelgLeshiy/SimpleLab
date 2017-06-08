@@ -1,5 +1,6 @@
 #include "Workspace.h"
 #include "prefs.h"
+#include <cctype>
 
 Workspace::Workspace()
 {
@@ -24,26 +25,51 @@ void Workspace::writeLine(const std::string& text)
 	slideLines();
 }
 
+void Workspace::insertToCursor(const std::string & text)
+{
+	m_lines.back().insert(m_cursor.getPos(), text);
+}
+
 void Workspace::onEvent(SDL_Event *event)
 {
 	switch (event->type)
 	{
 	case SDL_KEYDOWN:
-		if (event->key.keysym.sym == SDLK_RETURN)
-			writeLine();
-		else if (event->key.keysym.sym == SDLK_BACKSPACE)
+		switch (event->key.keysym.sym)
 		{
-			if (m_lines.back().length() > 0)
+		case SDLK_RETURN:
+			writeLine();
+			break;
+
+		case SDLK_BACKSPACE:
+			if (m_cursor.getPos() > 0)
 			{
 				m_lines.back().erase(m_cursor.getPos() - 1, 1);
 				m_cursor.goTo(m_cursor.getPos() - 1);
 			}
+			break;
+		case SDLK_LEFT:
+			if (m_cursor.getPos() > 0)
+			{
+				m_cursor.goTo(m_cursor.getPos() - 1);
+			}
+			break;
+		case SDLK_RIGHT:
+			if (m_cursor.getPos() < m_lines.back().length())
+			{
+				m_cursor.goTo(m_cursor.getPos() + 1);
+			}
+			break;
 		}
 		break;
 	case SDL_TEXTINPUT:
 	{
-		m_lines.back().insert(m_cursor.getPos(), event->text.text);
-		m_cursor.goTo(m_cursor.getPos() + strlen(event->text.text));
+		for(int i = 0; i < strlen(event->text.text); ++i)
+			if (std::isprint(event->text.text[i]))
+			{
+				m_lines.back().insert(m_cursor.getPos(), 1, event->text.text[i]);
+				m_cursor.goTo(m_cursor.getPos() + 1);
+			}
 		break;
 	}
 #ifdef _ANDROID_
@@ -100,6 +126,19 @@ void Workspace::render(SDL_Renderer * renderer, SpriteFont & font)
 const std::string& Workspace::getLastLine() const
 {
 	return m_lines.back();
+}
+
+std::string& Workspace::getLastLine()
+{
+	return m_lines.back();
+}
+
+void Workspace::shiftCursor(int n)
+{
+	if (m_lines.back().length() == 0) return;
+	int newPos = m_cursor.getPos() + n;
+	newPos %= m_lines.back().length();
+	m_cursor.goTo(newPos);
 }
 
 void Workspace::slideLines()

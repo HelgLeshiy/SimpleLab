@@ -46,9 +46,7 @@ private:
 
 	bool keyboard = false;
 
-	std::vector<Widget*> widgets;
-
-
+	std::vector< std::pair<Widget*, float> > widgets;
 
 public:
 	int execute(  );	//Вызывает главный цикл
