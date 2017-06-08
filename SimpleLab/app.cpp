@@ -82,9 +82,12 @@ void app::event( SDL_Event *evt )
 			int x = evt->button.x;
 			int y = evt->button.y;
 #endif
-			touch = true;
-			touchPos.x = x;
-			touchPos.y = y;
+			if (layout->getPosition().x > SCR_W - layout->getDimensions().x / 2 &&  x > SCR_W - 32 || layout->getPosition().x < SCR_W - layout->getDimensions().x / 2)
+			{
+				touch = true;
+				touchPos.x = x;
+				touchPos.y = y;
+			}
 
 			if (!SDL_IsTextInputActive())
 			{
@@ -222,12 +225,12 @@ void app::initWidgets()
 	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_EXIT.png"),
 						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_EXIT.png"),
 						 [this]() { quitting = true; });
-	buttons.back()->setRect(vec2(SCR_W - 64 - 84, 6), vec2(84, 54));
+	buttons.back()->setRect(vec2(SCR_W - 10 - 84, 6), vec2(84, 54));
 
 	layout = new Layout;
 	layout->init(ResourceManager::getTexture(rnd, "data/textures/layout.png"));
 	layout->setInnerStartPosition(vec2(10, 10));
-	layout->setRect(vec2(SCR_W, 0), vec2(200, SCR_H));
+	layout->setRect(vec2(SCR_W, 0), vec2(280, SCR_H));
 
 	for (auto button : buttons)
 		widgets.push_back(std::make_pair(button, 0.f));

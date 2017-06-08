@@ -29,6 +29,8 @@ private:
 	Cursor m_cursor;
 	int m_symbolWidth;
 	int m_symbolHeight;
+	vec2 m_contentShift;
+	bool m_pressed = false;
 
 	std::list < std::string > m_lines;
 };

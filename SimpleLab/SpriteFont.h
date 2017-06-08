@@ -20,6 +20,8 @@ public:
 	void init( SDL_Renderer *renderer, const std::string& fontSheetFile, int rows, int columns );
 	void draw( SDL_Renderer *renderer, const std::string& text, const vec2& pos, const vec2& scaling, const ColorRGBA8& color, FontAlign align = FontAlign::LEFT );
 	int getFontHeight() const { return m_symbHeight; }
+	int getTextWidth(const std::string& text, const vec2& scaling) const { return text.length() * scaling.x * m_symbWidth; }
+	int getSymbolWidth() const { return m_symbWidth; }
 
 private:
 	SDL_Texture *m_texture = nullptr;
