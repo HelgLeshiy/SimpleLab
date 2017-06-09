@@ -1,21 +1,14 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "guiFuncs.h"
+#include "GUI/guiFuncs.h"
 #include "SpriteFont.h"
 #include "Parser/Parser.h"
 #include <string>
 #include <list>
-#include "GUI/Widget.h"
-#include "Workspace.h"
+#include "Widgets/Widget.h"
+#include "Widgets/MultilineEdit.h"
 #include "ResourceManager.h"
-
-enum class LayoutState
-{
-	IDLE,
-	SWIPE_LEFT,
-	SWIPE_RIGHT
-};
 
 class app
 {
@@ -35,14 +28,12 @@ private:
 	SpriteFont spriteFont;
 	Namescope *global = nullptr;
 	Parser parser;
-	Workspace workspace;
 	std::string text;
 	
-	LayoutState layoutState = LayoutState::IDLE;
-	float swipe = 0.f;
+	MultilineEdit *workspace = nullptr;
+	
 	bool touch = false;
 	vec2 touchPos;
-	Layout *layout = nullptr;
 
 	bool keyboard = false;
 
