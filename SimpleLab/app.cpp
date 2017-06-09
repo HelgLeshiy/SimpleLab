@@ -7,6 +7,10 @@
 #include "ResourceManager.h"
 #include "prefs.h"
 
+#include "Widgets/SimpleButton.h"
+#include "Widgets/TexturedButton.h"
+#include "Widgets/Layout.h"
+
 std::string dtoa( double a )
 {
 	std::stringstream ss;
@@ -52,7 +56,6 @@ void app::init( )
 	global->installFunction( f_maxFunc, 3, "sdd", "maxF" );
 
 	initWidgets();
-	workspace.init(20, 20);
 }
 void app::destroyApp( )
 {
@@ -74,21 +77,10 @@ void app::event( SDL_Event *evt )
 #ifdef _ANDROID_
 		case SDL_FINGERDOWN:
 		{
-			int x = evt->tfinger.x * SCR_W;
-			int y = evt->tfinger.y * SCR_H;
 #else
 		case SDL_MOUSEBUTTONDOWN:
 		{
-			int x = evt->button.x;
-			int y = evt->button.y;
 #endif
-			if (layout->getPosition().x > SCR_W - layout->getDimensions().x / 2 &&  x > SCR_W - 32 || layout->getPosition().x < SCR_W - layout->getDimensions().x / 2)
-			{
-				touch = true;
-				touchPos.x = x;
-				touchPos.y = y;
-			}
-
 			if (!SDL_IsTextInputActive())
 			{
 				SDL_StartTextInput( );
@@ -98,78 +90,35 @@ void app::event( SDL_Event *evt )
 
 			break;
 		}
-#ifdef _ANDROID_
-		case SDL_FINGERUP:
-		{
-			int x = evt->tfinger.x * SCR_W;
-			int y = evt->tfinger.y * SCR_H;
-#else
-		case SDL_MOUSEBUTTONUP:
-		{
-			int x = evt->button.x;
-			int y = evt->button.y;
-#endif
-			touch = false;
-			if (touchPos.x - x > SWIPE_DISTANCE && layoutState == LayoutState::IDLE && layout->getPosition().x > SCR_W - layout->getDimensions().x / 2)
-			{
-				layoutState = LayoutState::SWIPE_LEFT;
-				swipe = 0.f;
-			}
-			else if (x - touchPos.x > SWIPE_DISTANCE && layoutState == LayoutState::IDLE && layout->getPosition().x < SCR_W - layout->getDimensions().x / 2)
-			{
-				layoutState = LayoutState::SWIPE_RIGHT;
-				swipe = 0.f;
-			}
-		}
-		break;
+
 		case SDL_KEYDOWN:
 			if ( evt->key.keysym.sym == SDLK_RETURN )
 			{
 				double result;
 				try
 				{
-					result = parser.parse( workspace.getLastLine(), global );
+					result = parser.parse( workspace->getLastLine(), global );
 				}
 				catch ( std::exception &ex )
 				{
-					workspace.writeLine(ex.what());
+					workspace->writeLine(ex.what());
 					break;
 				}
 				std::string varName = "  " + parser.getLastVar();
 				varName += " = " + dtoa(result);
-				workspace.writeLine(varName);
+				workspace->writeLine(varName);
 			}
 			break;
 	}
 
 	for (auto widget = widgets.rbegin(); widget != widgets.rend(); ++widget)
 		if (widget->first->onEvent(evt)) return;
-
-	workspace.onEvent(evt);
 }
 
 void app::loop( )
 {
-	if (layoutState == LayoutState::SWIPE_LEFT)
-	{
-		layout->move(vec2(-10.f, 0.f));
-		if (layout->getPosition().x < SCR_W - layout->getDimensions().x)
-		{
-			layout->setRect(vec2(SCR_W - layout->getDimensions().x, 0.f), layout->getDimensions());
-			layoutState = LayoutState::IDLE;
-		}
-	}
-	else if (layoutState == LayoutState::SWIPE_RIGHT)
-	{
-		layout->move(vec2(10.f, 0.f));
-		if (layout->getPosition().x > SCR_W)
-		{
-			layout->setRect(vec2(SCR_W, 0.f), layout->getDimensions());
-			layoutState = LayoutState::IDLE;
-		}
-	}
-
-	workspace.update(1.f);
+	for (auto widget = widgets.begin(); widget != widgets.end(); ++widget)
+		widget->first->onUpdate(1.f);
 }
 
 void app::rend( )
@@ -178,8 +127,6 @@ void app::rend( )
 	SDL_RenderClear( rnd );
 
 	renderTexture(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Background.png"), rnd, 0, 0, SCR_W, SCR_H);
-
-	workspace.render(rnd, spriteFont);
 
 	for (auto widget : widgets)
 		widget.first->render(rnd, spriteFont);
@@ -227,7 +174,7 @@ void app::initWidgets()
 						 [this]() { quitting = true; });
 	buttons.back()->setRect(vec2(SCR_W - 10 - 84, 6), vec2(84, 54));
 
-	layout = new Layout;
+	Layout *layout = new Layout;
 	layout->init(ResourceManager::getTexture(rnd, "data/textures/layout.png"));
 	layout->setInnerStartPosition(vec2(10, 10));
 	layout->setRect(vec2(SCR_W, 0), vec2(280, SCR_H));
@@ -258,13 +205,19 @@ void app::initWidgets()
 				autoWriteLine += ", ";
 			}
 			autoWriteLine += ')';
-			workspace.insertToCursor(autoWriteLine);
-			workspace.shiftCursor(firstString ? dCurPos + 1 : dCurPos);
+			workspace->insertToCursor(autoWriteLine);
+			workspace->shiftCursor(firstString ? dCurPos + 1 : dCurPos);
 		});
 		button->setRect(vec2(0.f, y), vec2(180, 60));
 		y += 64;
 		widgets.push_back(std::make_pair(button, 2.f));
 	}
+
+	workspace = new MultilineEdit;
+	workspace->init(20, 20);
+	workspace->setRect(vec2(0, 0), vec2(SCR_W, SCR_H));
+
+	widgets.push_back(std::make_pair(workspace, -1.f));
 
 	std::stable_sort(widgets.begin(), widgets.end(), [](const std::pair<Widget*, float>& a, const std::pair<Widget*, float>& b) { return a.second < b.second; });
 }

@@ -1,5 +1,5 @@
 #include "Cursor.h"
-#include "prefs.h"
+#include "../prefs.h"
 
 Cursor::Cursor()
 {

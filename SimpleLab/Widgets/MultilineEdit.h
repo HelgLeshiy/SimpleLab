@@ -1,21 +1,23 @@
 #pragma once
 #include <list>
-#include <SDL2/SDL.h>
+#include "Widget.h"
 #include "Cursor.h"
-#include "SpriteFont.h"
 
-class Workspace
+class MultilineEdit : public Widget
 {
 public:
-	Workspace();
-	~Workspace();
+	MultilineEdit(Widget *parent = nullptr);
+	~MultilineEdit();
 
 	void init(int symbolWidth, int symbolHeight);
 	void writeLine(const std::string& text = "");
 	void insertToCursor(const std::string& text);
-	void onEvent(SDL_Event *event);
-	void update(float deltaTime);
-	void render(SDL_Renderer *renderer, SpriteFont& font);
+	void onUpdate(float deltaTime) override;
+	void onTouch(int x, int y) override;
+	void onSwipe(int x, int y, float dx, float dy) override;
+	void onTextInput(const char *text) override;
+	void onKeyDown(int key) override;
+	void render(SDL_Renderer *renderer, SpriteFont& font) override;
 	const std::string& getLastLine() const;
 	std::string& getLastLine();
 
