@@ -6,6 +6,7 @@
 # User-specific files
 *.suo
 *.sln
+SimpleLab/log.txt
 *.vcxproj*
 *.user
 *.userosscache
