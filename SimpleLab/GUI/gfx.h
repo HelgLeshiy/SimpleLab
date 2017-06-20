@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 
 struct vec2
 {
@@ -29,5 +30,5 @@ static vec2 operator+ (const vec2& lhs, const vec2& rhs)
 
 static float distance(const vec2& a, const vec2& b)
 {
-	return std::sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
+	return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
 }

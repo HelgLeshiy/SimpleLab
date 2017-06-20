@@ -7,10 +7,9 @@ char format[] = "[%d/%m/%y %T]";
 std::string getDataTimeStr()
 {
 	time_t seconds = time(nullptr);
-	tm timeinfo;
-	localtime_s(&timeinfo, &seconds);
+	tm *timeinfo = localtime(&seconds);
 	char buffer[80];
-	strftime(buffer, 80, format, &timeinfo);
+	strftime(buffer, 80, format, timeinfo);
 
 	return buffer;
 }

@@ -1,6 +1,7 @@
 #include "MultilineEdit.h"
 #include "../prefs.h"
 #include <cctype>
+#include <cstring>
 
 MultilineEdit::MultilineEdit(Widget *parent)
 	: Widget(parent), m_contentShift(0.f, 0.f)
