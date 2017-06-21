@@ -52,6 +52,7 @@ void app::init( )
 	global->installFunction( f_maxFunc, 3, "maxF" );
 
 	initWidgets();
+	workspace.init(spriteFont.getFontWidth(  ), spriteFont.getFontHeight(  ));
 }
 void app::destroyApp( )
 {
@@ -194,8 +195,8 @@ int app::execute( )
 	{
 		while ( SDL_PollEvent( &evt ) )
 			event ( &evt );
-		loop(  );	//Логика
-		rend(  );	//Отрисовка
+		loop(  );	//Г‹Г®ГЈГЁГЄГ 
+		rend(  );	//ГЋГІГ°ГЁГ±Г®ГўГЄГ 
 		SDL_Delay( 50 );
 	}
 	destroyApp(  );
