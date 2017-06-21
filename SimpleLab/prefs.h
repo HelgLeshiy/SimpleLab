@@ -1,8 +1,8 @@
 #pragma once
 
 const float BLINK_SPEED = 0.1f;
-const int SCR_W = 1920;
-const int SCR_H = 1080;
+const int SCR_W = 800;
+const int SCR_H = 600;
 const float SWIPE_DISTANCE = 10.f;
 const int MAX_LINES = 10;
 const float TEXT_SCALE_X = 1.f;

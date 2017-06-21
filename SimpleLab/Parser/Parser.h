@@ -23,7 +23,7 @@ public:
 
 	const std::string& getLastVar() const { return lastVar; }
 
-	static void operatorMapInit();
+	void operatorMapInit();
 
 private:
 	struct Node
@@ -36,6 +36,7 @@ private:
 	double calkulate(Node *exprRoot);
 	bool findUnknownVar(Node *node);
 	void transformEquation(Node *&left, Node *&right);
+	static void popTreeLeft(Node *&node);
 
 	void getToken();
 
@@ -61,5 +62,5 @@ private:
 	Namescope *ns;
 	Lexer lexer;
 
-	static std::map<std::string, std::string> backOperators;
+	static std::map<std::string, std::function<void(Node *&left, Node *&right)>> backOperators;
 };

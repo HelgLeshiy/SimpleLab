@@ -1,15 +1,135 @@
 #include "Parser.h"
 #include <cmath>
 
-
-std::map<std::string, std::string> Parser::backOperators;
+std::map<std::string, std::function<void(Parser::Node *&left, Parser::Node *&right)>> Parser::backOperators;
 
 void Parser::operatorMapInit()
 {
-	backOperators["+"] = "-";
-	backOperators["-"] = "+";
-	backOperators["*"] = "/";
-	backOperators["/"] = "*";
+	backOperators["+"] = [this](Node *&left, Node *&right) 
+	{
+		if (!findUnknownVar(left->args[0]))
+			std::swap(left->args[0], left->args[1]);
+
+		Node *newRightRoot = new Node;
+		newRightRoot->token = Token(OPERATOR, "-");
+
+		newRightRoot->args.push_back(right);
+		newRightRoot->args.push_back(left->args[1]);
+
+		popTreeLeft(left);
+
+		right = newRightRoot;
+	};
+
+	backOperators["-"] = [this](Node *&left, Node *&right)
+	{
+		if (!findUnknownVar(left->args[0]))
+		{
+			Node *newRightRoot = new Node;
+			newRightRoot->token = Token(OPERATOR, "-");
+
+			Node *addNode = new Node;
+			addNode->token = Token(NUMBER, "0");
+
+			newRightRoot->args.push_back(addNode);
+			newRightRoot->args.push_back(right);
+
+			right = newRightRoot;
+
+			std::swap(left->args[0], left->args[1]);
+		}
+
+		Node *newRightRoot = new Node;
+		newRightRoot->token = Token(OPERATOR, "+");
+
+		newRightRoot->args.push_back(right);
+		newRightRoot->args.push_back(left->args[1]);
+
+		popTreeLeft(left);
+
+		right = newRightRoot;
+	};
+
+	backOperators["*"] = [this](Node *&left, Node *&right)
+	{
+		if (!findUnknownVar(left->args[0]))
+			std::swap(left->args[0], left->args[1]);
+
+		Node *newRightRoot = new Node;
+		newRightRoot->token = Token(OPERATOR, "/");
+
+		newRightRoot->args.push_back(right);
+		newRightRoot->args.push_back(left->args[1]);
+
+		popTreeLeft(left);
+
+		right = newRightRoot;
+	};
+
+	backOperators["/"] = [this](Node *&left, Node *&right)
+	{
+		if (!findUnknownVar(left->args[0]))
+		{
+			Node *newRightRoot = new Node;
+			newRightRoot->token = Token(OPERATOR, "/");
+
+			Node *addNode = new Node;
+			addNode->token = Token(NUMBER, "1");
+
+			newRightRoot->args.push_back(addNode);
+			newRightRoot->args.push_back(right);
+
+			right = newRightRoot;
+
+			std::swap(left->args[0], left->args[1]);
+		}
+
+		Node *newRightRoot = new Node;
+		newRightRoot->token = Token(OPERATOR, "*");
+
+		newRightRoot->args.push_back(right);
+		newRightRoot->args.push_back(left->args[1]);
+
+		popTreeLeft(left);
+
+		right = newRightRoot;
+	};
+
+	backOperators["^"] = [this](Node *&left, Node *&right)
+	{
+		if (findUnknownVar(left->args[0]))
+		{
+			Node *newRightBranch = new Node;
+			newRightBranch->token = Token(OPERATOR, "/");
+			Node *one = new Node;
+			one->token = Token(NUMBER, "1");
+
+			newRightBranch->args.push_back(one);
+			newRightBranch->args.push_back(left->args[1]);
+
+			Node *newRightRoot = new Node;
+			newRightRoot->token = Token(OPERATOR, "^");
+
+			newRightRoot->args.push_back(right);
+			newRightRoot->args.push_back(newRightBranch);
+			right = newRightRoot;
+
+			popTreeLeft(left);
+		}
+		else if (findUnknownVar(left->args[1]))
+		{
+			Node *newRightRoot = new Node;
+			newRightRoot->token = Token(IDENT, "log");
+
+			newRightRoot->args.push_back(right);
+			newRightRoot->args.push_back(left->args[0]);
+			right = newRightRoot;
+
+			std::swap(left->args[0], left->args[1]);
+			popTreeLeft(left);
+		}
+		
+	};
 }
 
 double Parser::parse(const std::string& input, Namescope *scope)
@@ -78,7 +198,7 @@ double Parser::calkulate(Node *exprRoot)
 
 			for (auto &it : exprRoot->args)
 			{
-				if (curTok.sym == STRING)
+				if (it->token.sym == STRING)
 				{
 					std::shared_ptr<Value> value(std::make_shared< TypedValue<std::string> >());
 					dynamic_cast<TypedValue<std::string>*>(value.get())->value = it->token.value;
@@ -146,23 +266,16 @@ void Parser::transformEquation(Node *&left, Node *&right)
 {
 	while (!(left->token.sym == IDENT && ns->lookupVar(left->token.value) == Namescope::not_found))
 	{
-		if (!findUnknownVar(left->args[0]))
-			std::swap(left->args[0], left->args[1]);
-
-		Node *newRightRoot = new Node;
-		newRightRoot->token.sym = OPERATOR;
-		newRightRoot->token.value = backOperators[left->token.value];
-
-		newRightRoot->args.push_back(right);
-		newRightRoot->args.push_back(left->args[1]);
-
-		Node *buf = left->args[0];
-		delete left;
-
-		left = buf;
-
-		right = newRightRoot;
+		backOperators[left->token.value](left, right);
 	}
+}
+
+void Parser::popTreeLeft(Node *&node)
+{
+	Node *buf = node->args[0];
+	delete node;
+
+	node = buf;
 }
 
 void Parser::getToken()
