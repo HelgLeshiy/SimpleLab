@@ -56,7 +56,6 @@ void app::init( )
 	global->installFunction( f_maxFunc, 3, "sdd", "maxF" );
 
 	initWidgets();
-	workspace.init(spriteFont.getFontWidth(  ), spriteFont.getFontHeight(  ));
 }
 void app::destroyApp( )
 {
@@ -215,7 +214,7 @@ void app::initWidgets()
 	}
 
 	workspace = new MultilineEdit;
-	workspace->init(20, 20);
+	workspace->init(spriteFont.getFontWidth(), spriteFont.getFontHeight());
 	workspace->setRect(vec2(0, 0), vec2(SCR_W, SCR_H));
 
 	widgets.push_back(std::make_pair(workspace, -1.f));

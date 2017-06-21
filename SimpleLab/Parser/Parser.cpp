@@ -173,6 +173,8 @@ void Parser::parseParams(std::vector<std::shared_ptr<Value>>& params)
 			params.push_back(value);
 		}
 	}
+
+	getToken();
 }
 
 double Parser::ident()
