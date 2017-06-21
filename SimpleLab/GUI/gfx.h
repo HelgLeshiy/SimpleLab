@@ -1,6 +1,8 @@
 #pragma once
 #include <cmath>
 
+#include <cmath>
+
 struct vec2
 {
 	vec2() = default;

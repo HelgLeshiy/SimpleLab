@@ -56,6 +56,7 @@ void app::init( )
 	global->installFunction( f_maxFunc, 3, "sdd", "maxF" );
 
 	initWidgets();
+	workspace.init(spriteFont.getFontWidth(  ), spriteFont.getFontHeight(  ));
 }
 void app::destroyApp( )
 {
