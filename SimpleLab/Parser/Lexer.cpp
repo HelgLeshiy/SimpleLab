@@ -6,6 +6,7 @@ void Lexer::startScan(const std::string& input)
 	ss << input << '\n';
 
 	init();
+	skipWhite();
 }
 
 Token Lexer::scan()

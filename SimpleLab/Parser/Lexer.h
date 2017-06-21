@@ -23,6 +23,9 @@ enum SymType
 
 struct Token
 {
+	Token() = default;
+	Token(SymType _sym, const std::string& val) : sym(_sym), value(val) { }
+
 	SymType sym;
 	std::string value;
 

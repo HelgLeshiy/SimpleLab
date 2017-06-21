@@ -39,6 +39,8 @@ void app::init( )
 
 	SDL_RenderDrawRect( rnd, &txtInp );
 
+	parser.operatorMapInit();
+
 	global->installFunction( f_sin, 1, "d", "sin" );
 	global->installFunction( f_cos, 1, "d", "cos" );
 	global->installFunction( f_tan, 1, "d", "tan" );
