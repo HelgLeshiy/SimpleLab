@@ -392,3 +392,11 @@ double f_maxFunc(Namescope* Na, const vector <shared_ptr<Value>>& args)
 
 	}
 }*/
+
+double f_backlogn(Namescope* Na, const vector <shared_ptr<Value>>& args)
+{
+	auto arg1 = (TypedValue<double>*)args[0].get();
+	if (!arg1)
+		throw std::runtime_error("argument type mismatch in function backlogn");
+	return exp(arg1->value);
+}

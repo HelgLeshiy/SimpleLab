@@ -41,21 +41,50 @@ void app::init( )
 
 	parser.operatorMapInit();
 
-	global->installFunction( f_sin, 1, "d", "sin" );
-	global->installFunction( f_cos, 1, "d", "cos" );
-	global->installFunction( f_tan, 1, "d", "tan" );
-	global->installFunction( f_ctan, 1, "d", "ctan" );
-	global->installFunction( f_sinh, 1, "d", "sinh" );
-	global->installFunction( f_cosh, 1, "d", "cosh" );
-	global->installFunction( f_tanh, 1, "d", "tanh" );
-	global->installFunction( f_ctanh, 1, "d", "ctanh" );
-	global->installFunction( f_logn, 1, "d", "ln" );
-	global->installFunction( f_log, 2, "dd", "log" );
-	global->installFunction( f_lengthStr, 1, "s", "strlen" );
-	global->installFunction( f_random, 2, "dd", "rand" );
-	global->installFunction( f_integral, 3, "sdd", "int" );
-	global->installFunction( f_minFunc, 3, "sdd", "minF" );
-	global->installFunction( f_maxFunc, 3, "sdd", "maxF" );
+	global->installFunction( f_sin,			1, "d",		"sin"	);
+	global->installFunction( f_cos,			1, "d",		"cos"	);
+	global->installFunction( f_tan,			1, "d",		"tan"	);
+	global->installFunction( f_ctan,		1, "d",		"ctan"	);
+	global->installFunction( f_sinh,		1, "d",		"sinh"	);
+	global->installFunction( f_cosh,		1, "d",		"cosh"	);
+	global->installFunction( f_tanh,		1, "d",		"tanh"	);
+	global->installFunction( f_ctanh,		1, "d",		"ctanh" );
+	global->installFunction( f_logn,		1, "d",		"ln"	);
+	global->installFunction( f_log,			2, "dd",	"log"	);
+	global->installFunction( f_lengthStr,	1, "s",		"strlen");
+	global->installFunction( f_random,		2, "dd",	"rand"	);
+	global->installFunction( f_integral,	3, "sdd",	"int"	);
+	global->installFunction( f_minFunc,		3, "sdd",	"minF"	);
+	global->installFunction( f_maxFunc,		3, "sdd",	"maxF"	);
+
+	global->installFunction( f_arcsin,		1, "d",		"asin"	);
+	global->installFunction( f_arccos,		1, "d",		"acos"	);
+	global->installFunction( f_arctan,		1, "d",		"atan"	);
+	global->installFunction( f_arcctan,		1, "d",		"actan"	);
+	global->installFunction( f_arcsinh,		1, "d",		"asinh"	);
+	global->installFunction( f_arccosh,		1, "d",		"acosh"	);
+	global->installFunction( f_arctanh,		1, "d",		"atanh"	);
+	global->installFunction( f_arcctanh,	1, "d",		"actanh");
+
+	global->installFunction(f_backlogn, 1, "d", "backlogn");
+
+	global->registerBackFunction("sin", "asin");
+	global->registerBackFunction("asin", "sin");
+	global->registerBackFunction("cos", "acos");
+	global->registerBackFunction("acos", "cos");
+	global->registerBackFunction("tan", "atan");
+	global->registerBackFunction("atan", "tan");
+	global->registerBackFunction("ctan", "actan");
+	global->registerBackFunction("actan", "ctan");
+	global->registerBackFunction("sinh", "asinh");
+	global->registerBackFunction("asinh", "sinh");
+	global->registerBackFunction("cosh", "acosh");
+	global->registerBackFunction("acosh", "cosh");
+	global->registerBackFunction("tanh", "atanh");
+	global->registerBackFunction("atanh", "tanh");
+	global->registerBackFunction("ctanh", "actanh");
+	global->registerBackFunction("actanh", "ctanh");
+	global->registerBackFunction("ln", "backlogn");
 
 	initWidgets();
 }
