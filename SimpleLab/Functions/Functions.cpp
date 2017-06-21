@@ -66,6 +66,70 @@ double f_ctanh(Namescope* Na, const vector<shared_ptr<Value>>& args)
 	return 1/tanh(arg1->value);
 }
 
+double f_arcsin(Namescope* Na, const vector<shared_ptr<Value>>& args)
+{
+	auto arg1 = (TypedValue<double>*)args[0].get();
+	if (!arg1)
+		throw std::runtime_error("argument type mismatch in function arcsin");
+	return asin(arg1->value);
+}
+
+double f_arccos(Namescope* Na, const vector<shared_ptr<Value>>& args)
+{
+	auto arg1 = (TypedValue<double>*)args[0].get();
+	if (!arg1)
+		throw std::runtime_error("argument type mismatch in function arccos");
+	return acos(arg1->value);
+}
+
+double f_arctan(Namescope* Na, const vector<shared_ptr<Value>>& args)
+{
+	auto arg1 = (TypedValue<double>*)args[0].get();
+	if (!arg1)
+		throw std::runtime_error("argument type mismatch in function arctg");
+	return atan(arg1->value);
+}
+
+double f_arcctan(Namescope* Na, const vector<shared_ptr<Value>>& args)
+{
+	auto arg1 = (TypedValue<double>*)args[0].get();
+	if (!arg1)
+		throw std::runtime_error("argument type mismatch in function arcctg");
+	return atan(1/arg1->value);
+}
+
+double f_arcsinh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+{
+	auto arg1 = (TypedValue<double>*)args[0].get();
+	if (!arg1)
+		throw std::runtime_error("argument type mismatch in function arcsinh");
+	return asinh(arg1->value);
+}
+
+double f_arccosh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+{
+	auto arg1 = (TypedValue<double>*)args[0].get();
+	if (!arg1)
+		throw std::runtime_error("argument type mismatch in function arccosh");
+	return acosh(arg1->value);
+}
+
+double f_arctanh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+{
+	auto arg1 = (TypedValue<double>*)args[0].get();
+	if (!arg1)
+		throw std::runtime_error("argument type mismatch in function arctanh");
+	return atanh(arg1->value);
+}
+
+double f_arcctanh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+{
+	auto arg1 = (TypedValue<double>*)args[0].get();
+	if (!arg1)
+		throw std::runtime_error("argument type mismatch in function arcctanh");
+	return atanh(1/arg1->value);
+}
+
 double f_logn(Namescope* Na, const vector<shared_ptr<Value>>& args)
 {
 	auto arg1 = (TypedValue<double>*)args[0].get();
@@ -297,3 +361,34 @@ double f_maxFunc(Namescope* Na, const vector <shared_ptr<Value>>& args)
 	double f = p.parse(arg1->value, &localScope);
 	return f;
 }
+
+/*double f_equation(Namescope* Na, const vector <shared_ptr<Value>>& args)
+{
+	auto arg1 = (TypedValue<std::string>*)args[0].get();
+	auto arg2 = (TypedValue<double>*)args[1].get();
+	auto arg3 = (TypedValue<double>*)args[2].get();
+	auto arg4 = (TypedValue<std::string>*)args[3].get();
+	if (!arg1 || !arg2 || !arg3 || !arg4)
+		throw std::runtime_error("argument type mismatch in function solution of equation");
+	Parser p;
+	Namescope localScope(Na);
+	double x1 = arg2->value;
+	double x2 = arg3->value;
+	localScope.setVar(std::make_shared< TypedValue<double> >(x1), arg4->value);
+	double f1 = p.parse(arg1->value, &localScope);
+	localScope.setVar(std::make_shared< TypedValue<double> >(x2), arg4->value);
+	double f2 = p.parse(arg1->value, &localScope);
+	if (f1 == 0)
+		return x1;
+	if (f2 == 0)
+		return x2;
+	while ((f1 > 0 && f2 > 0 || f1 < 0 && f2 < 0) && x2-x1 < 0.00000001)
+	{
+		double xm = (x1 + x2) / 2;
+		localScope.setVar(std::make_shared< TypedValue<double> >(xm), arg4->value);
+		double fm = p.parse(arg1->value, &localScope);
+		if (fm == 0)
+			return xm;
+
+	}
+}*/
