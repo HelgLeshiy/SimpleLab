@@ -23,30 +23,43 @@ public:
 
 	const std::string& getLastVar() const { return lastVar; }
 
+	static void operatorMapInit();
+
 private:
+	struct Node
+	{
+		Token token;
+		std::vector<Node*> args;
+	};
+
+	Node* createTree(const std::string& expr);
+	double calkulate(Node *exprRoot);
+	bool findUnknownVar(Node *node);
+	void transformEquation(Node *&left, Node *&right);
+
 	void getToken();
 
 	bool isaddop(const std::string& s) { return s == "+" || s == "-"; }
 	bool ismulop(const std::string& s) { return s == "*" || s == "/"; }
 
-	double expression();
+	Node* expression();
 	double assigment();
-	double term();
-	double power();
-	double factor();
-	double ident();
-	void parseParams(std::vector<std::shared_ptr<Value>>& params);
+	Node* term();
+	Node* power();
+	Node* factor();
+	Node* ident();
+	void parseParams(Node *node);
 
 private:
 	void init();
 	Token curTok;
 
-	//std::map<std::string, double> memory;
-	//std::map<std::string, std::function<double(void)>> functions;
 	bool hasVarName;
 	std::string lastVar;
 	std::stringstream ss;
 
 	Namescope *ns;
 	Lexer lexer;
+
+	static std::map<std::string, std::string> backOperators;
 };
