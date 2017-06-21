@@ -23,6 +23,8 @@ public:
 	int getFontHeight() const { return m_symbHeight; }
 	int getFontWidth() const { return m_symbWidth; }
 	SDL_Surface * CreateFontMap( SDL_Renderer * rnd, const char * fontFile, SDL_Color textColor, int rows, int clms );
+	int getTextWidth(const std::string& text, const vec2& scaling) const { return text.length() * scaling.x * m_symbWidth; }
+	int getSymbolWidth() const { return m_symbWidth; }
 
 private:
 	SDL_Texture *m_texture = nullptr;

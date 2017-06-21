@@ -1,4 +1,5 @@
 #include "Parser.h"
+#include <cmath>
 
 double Parser::parse(const std::string& input, Namescope *scope)
 {
@@ -120,7 +121,7 @@ double Parser::power()
 	{
 		
 		getToken();
-		ans = std::pow(ans, power());
+		ans = pow(ans, power());
 	}
 
 	return ans;
