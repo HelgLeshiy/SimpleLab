@@ -1,10 +1,15 @@
 #include "app.h"
 #include <SDL2/SDL_ttf.h>
 #include <sstream>
+#include <fstream>
+#include <algorithm>
 #include "Functions\Functions.h"
+#include "ResourceManager.h"
+#include "prefs.h"
 
-#define SCR_W 640
-#define SCR_H 480
+#include "Widgets/SimpleButton.h"
+#include "Widgets/TexturedButton.h"
+#include "Widgets/Layout.h"
 
 std::string dtoa( double a )
 {
@@ -34,26 +39,56 @@ void app::init( )
 
 	SDL_RenderDrawRect( rnd, &txtInp );
 
-	workspace.push_back( "" );
-	global->installFunction( f_sin, 1, "sin" );
-	global->installFunction( f_cos, 1, "cos" );
-	global->installFunction( f_tan, 1, "tan" );
-	global->installFunction( f_ctan, 1, "ctan" );
-	global->installFunction( f_sinh, 1, "sinh" );
-	global->installFunction( f_cosh, 1, "cosh" );
-	global->installFunction( f_tanh, 1, "tanh" );
-	global->installFunction( f_ctanh, 1, "ctanh" );
-	global->installFunction( f_logn, 1, "ln" );
-	global->installFunction( f_log, 2, "log" );
-	global->installFunction( f_lengthStr, 1, "strlen" );
-	global->installFunction( f_random, 2, "rand" );
-	global->installFunction( f_integral, 3, "int" );
-	global->installFunction( f_minFunc, 3, "minF" );
-	global->installFunction( f_maxFunc, 3, "maxF" );
+	parser.operatorMapInit();
 
+	global->installFunction( f_sin,			1, "d",		"sin"	);
+	global->installFunction( f_cos,			1, "d",		"cos"	);
+	global->installFunction( f_tan,			1, "d",		"tan"	);
+	global->installFunction( f_ctan,		1, "d",		"ctan"	);
+	global->installFunction( f_sinh,		1, "d",		"sinh"	);
+	global->installFunction( f_cosh,		1, "d",		"cosh"	);
+	global->installFunction( f_tanh,		1, "d",		"tanh"	);
+	global->installFunction( f_ctanh,		1, "d",		"ctanh" );
+	global->installFunction( f_logn,		1, "d",		"ln"	);
+	global->installFunction( f_log,			2, "dd",	"log"	);
+	global->installFunction( f_lengthStr,	1, "s",		"strlen");
+	global->installFunction( f_random,		2, "dd",	"rand"	);
+	global->installFunction( f_integral,	3, "sdd",	"int"	);
+	global->installFunction( f_minFunc,		3, "sdd",	"minF"	);
+	global->installFunction( f_maxFunc,		3, "sdd",	"maxF"	);
 
-	
+	global->installFunction( f_arcsin,		1, "d",		"asin"	);
+	global->installFunction( f_arccos,		1, "d",		"acos"	);
+	global->installFunction( f_arctan,		1, "d",		"atan"	);
+	global->installFunction( f_arcctan,		1, "d",		"actan"	);
+	global->installFunction( f_arcsinh,		1, "d",		"asinh"	);
+	global->installFunction( f_arccosh,		1, "d",		"acosh"	);
+	global->installFunction( f_arctanh,		1, "d",		"atanh"	);
+	global->installFunction( f_arcctanh,	1, "d",		"actanh");
 
+	global->installFunction(f_backlogn, 1, "d", "backlogn");
+	global->installFunction(f_backlog, 2, "dd", "backlog");
+
+	global->registerBackFunction("sin", "asin");
+	global->registerBackFunction("asin", "sin");
+	global->registerBackFunction("cos", "acos");
+	global->registerBackFunction("acos", "cos");
+	global->registerBackFunction("tan", "atan");
+	global->registerBackFunction("atan", "tan");
+	global->registerBackFunction("ctan", "actan");
+	global->registerBackFunction("actan", "ctan");
+	global->registerBackFunction("sinh", "asinh");
+	global->registerBackFunction("asinh", "sinh");
+	global->registerBackFunction("cosh", "acosh");
+	global->registerBackFunction("acosh", "cosh");
+	global->registerBackFunction("tanh", "atanh");
+	global->registerBackFunction("atanh", "tanh");
+	global->registerBackFunction("ctanh", "actanh");
+	global->registerBackFunction("actanh", "ctanh");
+	global->registerBackFunction("ln", "backlogn");
+	global->registerBackFunction("log", "backlog");
+
+	initWidgets();
 }
 void app::destroyApp( )
 {
@@ -64,6 +99,7 @@ void app::destroyApp( )
 	IMG_Quit(  );
 	SDL_Quit(  );
 }
+
 void app::event( SDL_Event *evt )
 {
 	switch ( evt->type )
@@ -74,46 +110,11 @@ void app::event( SDL_Event *evt )
 #ifdef _ANDROID_
 		case SDL_FINGERDOWN:
 		{
-			int x = evt->tfinger.x * SCR_W;
-			int y = evt->tfinger.y * SCR_H;
 #else
 		case SDL_MOUSEBUTTONDOWN:
 		{
-			int x = evt->button.x;
-			int y = evt->button.y;
 #endif
-			//if ( ( x < 100 ) && ( x > 0 ) && ( y > 0 ) && ( y < 60 ) )
-			//{
-			//	buttonDraw( rnd, "Undo", 0, 0, 100, 60, PrsBtColr, tbCol );
-			//}
-			//else if ( ( x < 200 ) && ( x > 100 ) && ( y > 0 ) && ( y < 60 ) )
-			//{
-			//	buttonDraw( rnd, "Redo", 100, 0, 100, 60, PrsBtColr, tbCol );
-			//}
-			//else if ( ( x < 300 ) && ( x > 200 ) && ( y > 0 ) && ( y < 60 ) )
-			//{
-			//	buttonDraw( rnd, "ClearAll", 200, 0, 100, 60, PrsBtColr, tbCol );
-			//}
-			//else if ( ( x < 400 ) && ( x > 300 ) && ( y > 0 ) && ( y < 60 ) )
-			//{
-			//	buttonDraw( rnd, "Save", 300, 0, 100, 60, PrsBtColr, tbCol );
-			//}
-			if ( x > 600 && y < 60 )
-			{
-				//buttonDraw( rnd, "X", 600, 0, 60, 60, PrsClsBtn, BlackColr );
-				quitting = true;
-			}
-			//else if ( ( x < 60 ) && ( x > 0 ) && ( y > 1088 ) && ( y < 1027 ) )
-			//{
-			//	buttonDraw( rnd, "0", 0, 1088, 59, 60, PrsBtColr, tbCol );
-			//}
-
-			if ( keyboard )
-			{
-				SDL_StopTextInput( );
-				keyboard = false;
-			}
-			else
+			if (!SDL_IsTextInputActive())
 			{
 				SDL_StartTextInput( );
 				keyboard = true;
@@ -122,94 +123,136 @@ void app::event( SDL_Event *evt )
 
 			break;
 		}
-		//case SDL_FINGERUP:
-		//{
-		//	buttonDraw( rnd, "Undo", 0, 0, 100, 60, bCols, tbCol );
-		//	buttonDraw( rnd, "Redo", 100, 0, 100, 60, bCols, tbCol );
-		//	buttonDraw( rnd, "ClearAll", 200, 0, 100, 60, bCols, tbCol );
-		//	buttonDraw( rnd, "Save", 300, 0, 100, 60, bCols, tbCol );
-		//	//buttonDraw( rnd, "Load", 400, 0, 100, 60, bCols, tbCol );
-		//	//buttonDraw( rnd, "GraphOut", 500, 0, 100, 60, bCols, tbCol );
-		//	buttonDraw( rnd, "X", 660, 0, 60, 60, ClosBtCol, bCols );
-		//}
-		//break;
+
 		case SDL_KEYDOWN:
 			if ( evt->key.keysym.sym == SDLK_RETURN )
 			{
 				double result;
 				try
 				{
-					result = parser.parse( workspace.back(  ), global );
+					result = parser.parse( workspace->getLastLine(), global );
 				}
 				catch ( std::exception &ex )
 				{
-					workspace.push_back( ex.what(  ) );
-					workspace.emplace_back( "" );
+					workspace->writeLine(ex.what());
 					break;
 				}
-				std::string varName = parser.getLastVar(  );
-				varName += " = " + dtoa( result );
-				workspace.push_back( varName );
-				workspace.emplace_back( "" );
-
-				if ( workspace.size(  ) > 7 )
-				{
-					workspace.pop_front(  );
-					workspace.pop_front(  );
-				}
-
-
-
-				//text.clear(  );
-			}
-			else if ( evt->key.keysym.sym == SDLK_BACKSPACE )
-			{
-				if ( workspace.back(  ).length(  ) > 0 )
-				{
-					workspace.back(  ).pop_back(  );
-				}
+				std::string varName = "  " + parser.getLastVar();
+				varName += " = " + dtoa(result);
+				workspace->writeLine(varName);
 			}
 			break;
-		case SDL_TEXTINPUT:
-		{
-			std::string inp;
-			//workspace.emplace_back( evt->text.text );
-			workspace.back(  ) += evt->text.text;
-		}
-		break;
-		//case SDL_TEXTEDITING:
-		{
-			//composition = event.edit.text;
-			//cursor = event.edit.start;
-			//selection_len = event.edit.length;
-		}
-		//break;
 	}
+
+	for (auto widget = widgets.rbegin(); widget != widgets.rend(); ++widget)
+		if (widget->first->onEvent(evt)) return;
 }
+
 void app::loop( )
 {
-
+	for (auto widget = widgets.begin(); widget != widgets.end(); ++widget)
+		widget->first->onUpdate(1.f);
 }
+
 void app::rend( )
 {
 	SDL_SetRenderDrawColor( rnd, 0, 0, 0, 255 );
 	SDL_RenderClear( rnd );
 
-	//void buttonDraw( SDL_Renderer *renderer, SpriteFont &spriteFont, const std::string& text, const vec2& pos, const vec2 &dims, const vec2& scaling, const ColorRGBA8& color, const ColorRGBA8 &butCol )
+	renderTexture(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Background.png"), rnd, 0, 0, SCR_W, SCR_H);
 
-	buttonDraw( rnd, spriteFont, "Undo", vec2(0,0), vec2( 100, 60 ), bCols, tbCol );
-	buttonDraw( rnd, spriteFont, "Redo", vec2(100,0), vec2( 100, 60 ), bCols, tbCol );
-	buttonDraw( rnd, spriteFont, "Cls", vec2(200,0), vec2( 100, 60 ), bCols, tbCol );
-	buttonDraw( rnd, spriteFont, "Save", vec2(300,0), vec2( 100, 60 ), bCols, tbCol );
-	buttonDraw( rnd, spriteFont, "X", vec2(400,0), vec2( 60, 60 ), ClosBtCol, BlackColr );
+	for (auto widget : widgets)
+		widget.first->render(rnd, spriteFont);
 
-	int h = 60;
-	for ( auto &line:workspace )
-	{
-		spriteFont.draw( rnd, line, vec2( 2, h ), vec2( 1, 1 ), ColorRGBA8( 255, 255, 0, 255 ) );	//TODO: why -260, spriteFont???
-		h += 60;
-	}
 	SDL_RenderPresent( rnd );
+}
+
+void app::initWidgets()
+{
+	std::vector<TexturedButton*> buttons;
+	int posX = 64;
+
+	// Undo
+	buttons.push_back(new TexturedButton());
+	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_Undo.png"),
+						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_Undo.png"));
+	buttons.back()->setRect(vec2(posX, 0), vec2(100, 60));
+	posX += 77;
+
+	// Redo
+	buttons.push_back(new TexturedButton());
+	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_Redo.png"),
+						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_Redo.png"));
+	buttons.back()->setRect(vec2(posX, 0), vec2(100, 60));
+	posX += 77;
+
+	// Cls
+	buttons.push_back(new TexturedButton());
+	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_CLS.png"),
+						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_CLS.png"));
+	buttons.back()->setRect(vec2(posX, 0), vec2(100, 60));
+	posX += 77;
+
+	// Save
+	buttons.push_back(new TexturedButton());
+	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_Save.png"),
+						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_Save.png"));
+	buttons.back()->setRect(vec2(posX, 0), vec2(100, 60));
+	posX += 77;
+
+	// X
+	buttons.push_back(new TexturedButton());
+	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_EXIT.png"),
+						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_EXIT.png"),
+						 [this]() { quitting = true; });
+	buttons.back()->setRect(vec2(SCR_W - 10 - 84, 6), vec2(84, 54));
+
+	Layout *layout = new Layout;
+	layout->init(ResourceManager::getTexture(rnd, "data/textures/layout.png"));
+	layout->setInnerStartPosition(vec2(10, 10));
+	layout->setRect(vec2(SCR_W, 0), vec2(280, SCR_H));
+
+	for (auto button : buttons)
+		widgets.push_back(std::make_pair(button, 0.f));
+
+	widgets.push_back(std::make_pair(layout, 1.f));
+
+	float y = 0;
+	for (auto it = global->functionsBegin(); it != global->functionsEnd(); ++it)
+	{
+		TexturedButton *button = new TexturedButton(layout);
+		button->setText(it->first, ColorRGBA8(43, 200, 200, 255));
+		button->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed.png"),
+					 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed.png"),
+		[this, it]() {
+			std::string autoWriteLine = it->first + "(";
+			size_t dCurPos = autoWriteLine.length();
+			bool firstString = false;
+			for (int i = 0; i < it->second->argnum - 1; ++i)
+			{
+				if (it->second->argTypes[i] == 's')
+				{
+					autoWriteLine += "\"\"";
+					if (i == 0) firstString = true;
+				}
+				autoWriteLine += ", ";
+			}
+			autoWriteLine += ')';
+			workspace->insertToCursor(autoWriteLine);
+			workspace->shiftCursor(firstString ? dCurPos + 1 : dCurPos);
+		});
+		button->setRect(vec2(0.f, y), vec2(180, 60));
+		y += 64;
+		widgets.push_back(std::make_pair(button, 2.f));
+	}
+
+	workspace = new MultilineEdit;
+	workspace->init(spriteFont.getFontWidth(), spriteFont.getFontHeight());
+	workspace->setRect(vec2(0, 0), vec2(SCR_W, SCR_H));
+
+	widgets.push_back(std::make_pair(workspace, -1.f));
+
+	std::stable_sort(widgets.begin(), widgets.end(), [](const std::pair<Widget*, float>& a, const std::pair<Widget*, float>& b) { return a.second < b.second; });
 }
 
 int app::execute( )
@@ -222,7 +265,7 @@ int app::execute( )
 			event ( &evt );
 		loop(  );	//Логика
 		rend(  );	//Отрисовка
-		SDL_Delay( 50 );
+		SDL_Delay( 10 );
 	}
 	destroyApp(  );
 	return 0;

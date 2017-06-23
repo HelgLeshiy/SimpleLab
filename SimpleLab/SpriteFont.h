@@ -1,21 +1,9 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <string>
-
-struct vec2
-{
-	vec2( ) = default;
-	vec2( float X, float Y ) : x( X ), y( Y ) { }
-	float x, y;
-};
-
-struct ColorRGBA8
-{
-	ColorRGBA8( ) : r( 0 ), g( 0 ), b( 0 ), a( 0 ) { }
-	ColorRGBA8( unsigned char _r, unsigned char _g, unsigned char _b, unsigned char _a = 0 ) : r( _r ), g( _g ), b( _b ), a( _a ) { }
-	unsigned char r, g, b, a;
-};
+#include "GUI/gfx.h"
 
 enum class FontAlign
 {
@@ -32,6 +20,11 @@ public:
 
 	void init( SDL_Renderer *renderer, const std::string& fontSheetFile, int rows, int columns );
 	void draw( SDL_Renderer *renderer, const std::string& text, const vec2& pos, const vec2& scaling, const ColorRGBA8& color, FontAlign align = FontAlign::LEFT );
+	int getFontHeight() const { return m_symbHeight; }
+	int getFontWidth() const { return m_symbWidth; }
+	SDL_Surface * CreateFontMap( SDL_Renderer * rnd, const char * fontFile, SDL_Color textColor, int rows, int clms );
+	int getTextWidth(const std::string& text, const vec2& scaling) const { return text.length() * scaling.x * m_symbWidth; }
+	int getSymbolWidth() const { return m_symbWidth; }
 
 private:
 	SDL_Texture *m_texture = nullptr;

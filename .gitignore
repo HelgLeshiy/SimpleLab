@@ -5,9 +5,13 @@
 
 # User-specific files
 *.suo
+*.sln
+SimpleLab/log.txt
+*.vcxproj*
 *.user
 *.userosscache
 *.sln.docstates
+**/deps
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
