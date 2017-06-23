@@ -67,6 +67,7 @@ void app::init( )
 	global->installFunction( f_arcctanh,	1, "d",		"actanh");
 
 	global->installFunction(f_backlogn, 1, "d", "backlogn");
+	global->installFunction(f_backlog, 2, "dd", "backlog");
 
 	global->registerBackFunction("sin", "asin");
 	global->registerBackFunction("asin", "sin");
@@ -85,6 +86,7 @@ void app::init( )
 	global->registerBackFunction("ctanh", "actanh");
 	global->registerBackFunction("actanh", "ctanh");
 	global->registerBackFunction("ln", "backlogn");
+	global->registerBackFunction("log", "backlog");
 
 	initWidgets();
 }

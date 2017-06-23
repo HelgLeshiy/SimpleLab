@@ -400,3 +400,12 @@ double f_backlogn(Namescope* Na, const vector <shared_ptr<Value>>& args)
 		throw std::runtime_error("argument type mismatch in function backlogn");
 	return exp(arg1->value);
 }
+
+double f_backlog(Namescope* Na, const vector <shared_ptr<Value>>& args)
+{
+	auto arg1 = (TypedValue<double>*)args[0].get();
+	auto arg2 = (TypedValue<double>*)args[1].get();
+	if (!arg1 || !arg2)
+		throw std::runtime_error("argument type mismatch in function backlog");
+	return pow(arg1->value, arg2->value);
+}

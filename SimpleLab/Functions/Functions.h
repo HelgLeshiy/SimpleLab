@@ -33,3 +33,4 @@ double f_arctanh	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
 double f_arcctanh	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
 
 double f_backlogn	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
+double f_backlog	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
