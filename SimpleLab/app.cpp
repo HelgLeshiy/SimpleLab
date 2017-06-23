@@ -102,10 +102,31 @@ void app::destroyApp( )
 
 void app::event( SDL_Event *evt )
 {
-	switch ( evt->type )
+	switch (appState)
 	{
+	case MainAppState::LOGO:
+	{
+		switch (evt->type)
+		{
+#ifdef _ANDROID_
+		case SDL_FINGERDOWN:
+		{
+#else
+		case SDL_MOUSEBUTTONDOWN:
+		{
+#endif
+			appState = MainAppState::RUN;
+			break;
+		}
+		break;
+		}
+
+	case MainAppState::RUN:
+	{
+		switch (evt->type)
+		{
 		case SDL_QUIT:
-			quitting = true;
+			appState = MainAppState::EXIT;
 			break;
 #ifdef _ANDROID_
 		case SDL_FINGERDOWN:
@@ -116,7 +137,7 @@ void app::event( SDL_Event *evt )
 #endif
 			if (!SDL_IsTextInputActive())
 			{
-				SDL_StartTextInput( );
+				SDL_StartTextInput();
 				keyboard = true;
 			}
 			//spriteFont.draw(rnd, text.c_str(  ), vec2(720, 64), vec2(1.f, 1.f), ColorRGBA8(255, 255, 0, 255), FontAlign::LEFT);
@@ -125,14 +146,14 @@ void app::event( SDL_Event *evt )
 		}
 
 		case SDL_KEYDOWN:
-			if ( evt->key.keysym.sym == SDLK_RETURN )
+			if (evt->key.keysym.sym == SDLK_RETURN)
 			{
 				double result;
 				try
 				{
-					result = parser.parse( workspace->getLastLine(), global );
+					result = parser.parse(workspace->getLastLine(), global);
 				}
-				catch ( std::exception &ex )
+				catch (std::exception &ex)
 				{
 					workspace->writeLine(ex.what());
 					break;
@@ -142,16 +163,40 @@ void app::event( SDL_Event *evt )
 				workspace->writeLine(varName);
 			}
 			break;
-	}
+		}
 
-	for (auto widget = widgets.rbegin(); widget != widgets.rend(); ++widget)
-		if (widget->first->onEvent(evt)) return;
+		for (auto widget = widgets.rbegin(); widget != widgets.rend(); ++widget)
+			if (widget->first->onEvent(evt)) return;
+		break;
+	}
+	}
+	}
 }
 
 void app::loop( )
 {
-	for (auto widget = widgets.begin(); widget != widgets.end(); ++widget)
-		widget->first->onUpdate(1.f);
+	switch (appState)
+	{
+	case MainAppState::LOGO:
+	{
+		switch (logoState)
+		{
+		case LogoState::INCREASE:
+			logoTimer += 0.01;
+			if (logoTimer >= 1.f) logoState = LogoState::DECREASE;
+			break;
+		case LogoState::DECREASE:
+			logoTimer -= 0.01;
+			if (logoTimer <= 0 ) appState = MainAppState::RUN;
+			break;
+		}
+	}	break;
+
+	case MainAppState::RUN:
+		for (auto widget = widgets.begin(); widget != widgets.end(); ++widget)
+			widget->first->onUpdate(1.f);
+		break;
+	}
 }
 
 void app::rend( )
@@ -160,9 +205,34 @@ void app::rend( )
 	SDL_RenderClear( rnd );
 
 	renderTexture(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Background.png"), rnd, 0, 0, SCR_W, SCR_H);
+	SDL_Rect screenRect = { 0, 0, SCR_W, SCR_H };
+	SDL_SetRenderDrawColor(rnd, 24, 24, 25, 255);
+	SDL_RenderFillRect(rnd, &screenRect);
+	SDL_SetRenderDrawColor(rnd, 0, 0, 0, 255);
 
-	for (auto widget : widgets)
-		widget.first->render(rnd, spriteFont);
+	switch (appState)
+	{
+	case MainAppState::LOGO:
+	{
+		SDL_Texture *logoTexture = ResourceManager::getTexture(rnd, "data/textures/bigLogo.png");
+		int logoW, logoH;
+
+		SDL_QueryTexture(logoTexture, nullptr, nullptr, &logoW, &logoH);
+		SDL_SetTextureBlendMode(ResourceManager::getTexture(rnd, "data/textures/bigLogo.png"), SDL_BLENDMODE_BLEND);
+		SDL_SetTextureAlphaMod(logoTexture, 255 * logoTimer);
+		SDL_Rect foxRect;
+		foxRect.x = 0;
+		foxRect.w = SCR_W;
+		SDL_RenderCopy(rnd, logoTexture, 0, &foxRect);
+		//renderTexture(logoTexture, rnd, 0, SCR_H / 2 - logoH / 2, logoW, SCR_H / 2 + logoH / 2);
+	}	break;
+
+	case MainAppState::RUN:
+	{
+		for (auto widget : widgets)
+			widget.first->render(rnd, spriteFont);
+	}	break;
+	}
 
 	SDL_RenderPresent( rnd );
 }
@@ -204,7 +274,7 @@ void app::initWidgets()
 	buttons.push_back(new TexturedButton());
 	buttons.back()->init(ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Unpressed_EXIT.png"),
 						 ResourceManager::getTexture(rnd, "data/textures/SimpleLab_Button_Pressed_EXIT.png"),
-						 [this]() { quitting = true; });
+						 [this]() { appState = MainAppState::EXIT; });
 	buttons.back()->setRect(vec2(SCR_W - 10 - 84, 6), vec2(84, 54));
 
 	Layout *layout = new Layout;
@@ -259,7 +329,7 @@ int app::execute( )
 {
 	init(  );
 	SDL_Event evt;
-	while ( !quitting )
+	while ( appState != MainAppState::EXIT )
 	{
 		while ( SDL_PollEvent( &evt ) )
 			event ( &evt );

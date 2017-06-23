@@ -10,12 +10,25 @@
 #include "Widgets/MultilineEdit.h"
 #include "ResourceManager.h"
 
+enum class MainAppState
+{
+	LOGO, RUN, EXIT
+};
+
+enum class LogoState
+{
+	INCREASE,
+	DECREASE
+};
+
 class app
 {
 private:
 	SDL_Window *wnd = nullptr;
 	SDL_Renderer *rnd = nullptr;
-	bool quitting = false;
+	MainAppState appState = MainAppState::LOGO;
+	LogoState logoState = LogoState::INCREASE;
+	float logoTimer = 0.f;
 
 	void init(  );
 	void destroyApp(  );
