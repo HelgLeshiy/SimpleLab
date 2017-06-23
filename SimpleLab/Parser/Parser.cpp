@@ -139,10 +139,11 @@ double Parser::parse(const std::string& input, Namescope *scope)
 
 	ns = scope;
 	size_t ePos = input.find('=');
+	size_t semicolonPos = input.find(';');
 	if (ePos != std::string::npos)
 	{
 		leftTree = createTree(input.substr(0, ePos));
-		rightTree = createTree(input.substr(ePos + 1, input.length() - 1));
+		rightTree = createTree(input.substr(ePos + 1, semicolonPos == std::string::npos ? input.length() - ePos - 1 : semicolonPos - ePos - 1));
 	}
 	else
 	{
@@ -156,14 +157,35 @@ double Parser::parse(const std::string& input, Namescope *scope)
 	bool varInRight = findUnknownVar(rightTree);
 
 	if (!varInLeft && !varInRight)
-		throw std::runtime_error("There must be at least one unknown variable in equation");
+	{
+		if (leftTree->token.sym == IDENT && ns->lookupFunc(leftTree->token.value, leftTree->args.size()) == Namescope::not_found)
+		{
+			ns->eraseVar(leftTree->token.value);
+			varInLeft = true;
+		}
+		else if (semicolonPos != std::string::npos)
+		{
+			std::string pivotVar = input.substr(semicolonPos + 1, input.length() - 1);
+			size_t i;
+			while ((i = pivotVar.find(' ')) != std::string::npos)
+				pivotVar.erase(i, 1);
 
+			ns->eraseVar(pivotVar);
+			varInLeft = findUnknownVar(leftTree);
+		}
+		else
+			throw std::runtime_error("There must be at least one unknown variable in equation");
+	}
+		
 	if(!varInLeft)
 		std::swap(leftTree, rightTree);
 
 	transformEquation(leftTree, rightTree);
 
-	return calkulate(rightTree);
+	double res = calkulate(rightTree);
+	ns->setVar(std::make_shared< TypedValue<double> >(res), leftTree->token.value);
+
+	return res;
 }
 
 Parser::Node* Parser::createTree(const std::string& expr)
@@ -252,7 +274,7 @@ double Parser::calkulate(Node *exprRoot)
 bool Parser::findUnknownVar(Node *node)
 {
 	if (!node) return false;
-	if (node->token.sym == IDENT && ns->lookupVar(node->token.value) != Namescope::found)
+	if (node->token.sym == IDENT && ns->lookupFunc(node->token.value, node->args.size()) != Namescope::found && ns->lookupVar(node->token.value) != Namescope::found)
 		return true;
 
 	for (auto &it : node->args)
@@ -264,9 +286,21 @@ bool Parser::findUnknownVar(Node *node)
 
 void Parser::transformEquation(Node *&left, Node *&right)
 {
-	while (!(left->token.sym == IDENT && ns->lookupVar(left->token.value) == Namescope::not_found))
+	while (!(left->token.sym == IDENT && left->args.size() == 0))
 	{
-		backOperators[left->token.value](left, right);
+		if (ns->lookupFunc(left->token.value, left->args.size()) == Namescope::found)
+		{
+			Node *newRightRoot = new Node;
+			newRightRoot->token = Token(IDENT, ns->getBackFunction(left->token.value));
+
+			newRightRoot->args.push_back(right);
+
+			popTreeLeft(left);
+
+			right = newRightRoot;
+		}
+		else
+			backOperators[left->token.value](left, right);
 	}
 }
 

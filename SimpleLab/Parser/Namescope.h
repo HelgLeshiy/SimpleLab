@@ -95,6 +95,23 @@ public:
     void installFunction(std::function<double(Namescope*, const std::vector<std::shared_ptr<Value>>&)> f, int argnum, const std::string& argTypes, std::string name);
 
 	/**
+	*	Register a new back function in this namescope
+	*
+	*	param	functionName		The the name of direct function
+	*	param	backFunctionName	The the name of backward function
+	**/
+	void registerBackFunction(const std::string& functionName, const std::string& backFunctionName);
+
+	/**
+	*	Returns a backward function name
+	*
+	*	param	functionName		The the name of direct function
+	*
+	*	return the name of backward function or "" if not exist
+	**/
+	const std::string& getBackFunction(const std::string& functionName);
+
+	/**
 	*	Sets a variable in this namescope
 	*
 	*	param	v		The variable interface pointer
@@ -118,11 +135,14 @@ public:
 	**/
     std::shared_ptr<Value> getVar(std::string name) const;
 
+	void eraseVar(const std::string& name);
+
 	std::map<std::string, std::shared_ptr<InstalledFunction>>::const_iterator functionsBegin() const { return functions.cbegin(); }
 	std::map<std::string, std::shared_ptr<InstalledFunction>>::const_iterator functionsEnd() const { return functions.cend(); }
 
 private:
     const Namescope* p_outer;
     std::map<std::string, std::shared_ptr<InstalledFunction>> functions;
+	std::map<std::string, std::string> backFunctions;
     std::map<std::string, std::shared_ptr<Value>> vars;
 };

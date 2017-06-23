@@ -33,6 +33,19 @@ void Namescope::installFunction(std::function<double(Namescope*, const std::vect
     functions.insert(make_pair(name, std::shared_ptr<InstalledFunction>(pf)));
 }
 
+void Namescope::registerBackFunction(const std::string& functionName, const std::string& backFunctionName)
+{
+	backFunctions[functionName] = backFunctionName;
+}
+
+const std::string& Namescope::getBackFunction(const std::string& functionName)
+{
+	if (backFunctions.find(functionName) == backFunctions.end())
+		return "";
+	
+	return backFunctions[functionName];
+}
+
 void Namescope::setVar(std::shared_ptr<Value> v, std::string name)
 {
 	vars[name] = v;
@@ -56,4 +69,9 @@ std::shared_ptr<Value> Namescope::getVar(std::string name) const
     if (p_outer != nullptr)
         return p_outer->getVar(name);
     return nullptr;
+}
+
+void Namescope::eraseVar(const std::string& name)
+{
+	vars.erase(name);
 }
