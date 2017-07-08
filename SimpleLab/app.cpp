@@ -4,6 +4,7 @@
 #include <fstream>
 #include <algorithm>
 #include "Functions\Functions.h"
+#include "Functions\GraphFunctions.h"
 #include "ResourceManager.h"
 #include "prefs.h"
 
@@ -69,6 +70,8 @@ void app::init( )
 	global->installFunction(f_backlogn, 1, "d", "backlogn");
 	global->installFunction(f_backlog, 2, "dd", "backlog");
 
+	global->installFunction(f_graph, 3, "sdd", "graph");
+
 	global->registerBackFunction("sin", "asin");
 	global->registerBackFunction("asin", "sin");
 	global->registerBackFunction("cos", "acos");
@@ -89,6 +92,8 @@ void app::init( )
 	global->registerBackFunction("log", "backlog");
 
 	initWidgets();
+
+	AppRef::InitGraphSystem(&widgets);
 }
 void app::destroyApp( )
 {

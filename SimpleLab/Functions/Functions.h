@@ -1,10 +1,10 @@
 #pragma once
 #include "../Parser/Namescope.h"
-#include<string>
-#include<math.h>
-#include<vector>
+#include <string>
+#include <math.h>
+#include <vector>
 #include <cstdlib>
-#include<stdexcept>
+#include <stdexcept>
 
 double f_sin		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
 double f_cos		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
