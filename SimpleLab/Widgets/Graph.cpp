@@ -3,6 +3,10 @@
 #include "../prefs.h"
 #include <algorithm>
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
 void Graph::init(const std::string& expr, double start, double end, Namescope *ns)
 {
 	m_expression = expr;

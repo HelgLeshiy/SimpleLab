@@ -1,5 +1,9 @@
 #include "SimpleButton.h"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
 void SimpleButton::init(const std::string& text, const ColorRGBA8& textColor,
 	const ColorRGBA8& fillColor, const ColorRGBA8& pressColor,
 	std::function<void(void)> cbFunction)

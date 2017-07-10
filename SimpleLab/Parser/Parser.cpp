@@ -153,6 +153,11 @@ double Parser::parse(const std::string& input, Namescope *scope)
 		leftTree->token.value = "ans";
 	}
 
+	std::cout << "Left tree:\n";
+	printTree(leftTree);
+	std::cout << "\n\Right tree:\n";
+	printTree(rightTree);
+
 	bool varInLeft = findUnknownVar(leftTree);
 	bool varInRight = findUnknownVar(rightTree);
 

@@ -1,18 +1,22 @@
 #include "app.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <sstream>
 #include <fstream>
 #include <algorithm>
-#include "Functions\Functions.h"
-#include "Functions\GraphFunctions.h"
+#include "Functions/Functions.h"
+#include "Functions/GraphFunctions.h"
 #include "ResourceManager.h"
 #include "prefs.h"
+#include "Timing.h"
 
 #include "Widgets/SimpleButton.h"
 #include "Widgets/TexturedButton.h"
 #include "Widgets/Layout.h"
 
-std::string dtoa( double a )
+template <typename T>
+std::string toString( T a )
 {
 	std::stringstream ss;
 	ss << a;
@@ -26,7 +30,10 @@ void app::init( )
 	TTF_Init(  );
 
 	wnd = SDL_CreateWindow( "SimpleLab for Smartphones", 100, 100, SCR_W, SCR_H, 0 );
-	rnd = SDL_CreateRenderer( wnd, -1, SDL_RENDERER_SOFTWARE );
+	rnd = SDL_CreateRenderer( wnd, -1, SDL_RENDERER_ACCELERATED );
+
+	SDL_RenderSetLogicalSize(rnd, 480, 800);
+
 	global = new Namescope(  );
 	spriteFont.init( rnd, "data/images/Bisasam_20x20_ascii.png", 16, 16 );
 	global->setVar( std::make_shared< TypedValue<double> >( 3.141592653589793 ), "pi" );
@@ -164,7 +171,7 @@ void app::event( SDL_Event *evt )
 					break;
 				}
 				std::string varName = "  " + parser.getLastVar();
-				varName += " = " + dtoa(result);
+				varName += " = " + toString(result);
 				workspace->writeLine(varName);
 			}
 			break;
@@ -178,7 +185,7 @@ void app::event( SDL_Event *evt )
 	}
 }
 
-void app::loop( )
+void app::loop(float deltaTime)
 {
 	switch (appState)
 	{
@@ -187,11 +194,11 @@ void app::loop( )
 		switch (logoState)
 		{
 		case LogoState::INCREASE:
-			logoTimer += 0.01;
+			logoTimer += 0.02 * deltaTime;
 			if (logoTimer >= 1.f) logoState = LogoState::DECREASE;
 			break;
 		case LogoState::DECREASE:
-			logoTimer -= 0.01;
+			logoTimer -= 0.02 * deltaTime;
 			if (logoTimer <= 0 ) appState = MainAppState::RUN;
 			break;
 		}
@@ -199,7 +206,7 @@ void app::loop( )
 
 	case MainAppState::RUN:
 		for (auto widget = widgets.begin(); widget != widgets.end(); ++widget)
-			widget->first->onUpdate(1.f);
+			widget->first->onUpdate(deltaTime);
 		break;
 	}
 }
@@ -223,7 +230,7 @@ void app::rend( )
 		int logoW, logoH;
 
 		SDL_QueryTexture(logoTexture, nullptr, nullptr, &logoW, &logoH);
-		SDL_SetTextureBlendMode(ResourceManager::getTexture(rnd, "data/textures/bigLogo.png"), SDL_BLENDMODE_BLEND);
+		SDL_SetTextureBlendMode(ResourceManager::getTexture(rnd, "data/textures/bigLogo.png"), SDL_BLENDMODE_ADD);
 		SDL_SetTextureAlphaMod(logoTexture, 255 * logoTimer);
 		SDL_Rect foxRect;
 		foxRect.x = 0;
@@ -238,6 +245,8 @@ void app::rend( )
 			widget.first->render(rnd, spriteFont);
 	}	break;
 	}
+
+	spriteFont.draw(rnd, toString((int)fps), vec2(20, 20), vec2(1.f, 1.f), ColorRGBA8(0, 255, 60, 255));
 
 	SDL_RenderPresent( rnd );
 }
@@ -285,7 +294,7 @@ void app::initWidgets()
 	Layout *layout = new Layout;
 	layout->init(ResourceManager::getTexture(rnd, "data/textures/layout.png"));
 	layout->setInnerStartPosition(vec2(10, 10));
-	layout->setRect(vec2(SCR_W, 0), vec2(280, SCR_H));
+	layout->setRect(vec2(SCR_W, 0), vec2(200, SCR_H));
 
 	for (auto button : buttons)
 		widgets.push_back(std::make_pair(button, 0.f));
@@ -334,13 +343,33 @@ int app::execute( )
 {
 	init(  );
 	SDL_Event evt;
+
+	const float MS_PER_SEC = 1000.f;
+	const float DESIRED_FPS = 60.f;
+	const float DESIRED_FRAMETIME = MS_PER_SEC / DESIRED_FPS;
+
+	FPSLimiter fpsLimiter;
+	fpsLimiter.init(DESIRED_FPS);
+
+	float previousTicks = SDL_GetTicks();
+
 	while ( appState != MainAppState::EXIT )
 	{
+		fpsLimiter.begin();
+
 		while ( SDL_PollEvent( &evt ) )
 			event ( &evt );
-		loop(  );	//Логика
+
+		float currentTicks = SDL_GetTicks();
+		float frameTime = currentTicks - previousTicks;
+		previousTicks = currentTicks;
+
+		float totalDelta = frameTime / DESIRED_FRAMETIME;
+
+		loop( totalDelta );	//Логика
 		rend(  );	//Отрисовка
-		SDL_Delay( 10 );
+
+		fps = fpsLimiter.end();
 	}
 	destroyApp(  );
 	return 0;
