@@ -51,6 +51,16 @@ private:
 	Node* ident();
 	void parseParams(Node *node);
 
+	void printTree(Node *node, int depth = 0)
+	{
+		if (!node) return;
+		for (int i = 0; i < depth; ++i)
+			std::cout << "  ";
+		std::cout << node->token.value << "\n";
+		for (auto& arg : node->args)
+			printTree(arg, depth+1);
+	}
+
 private:
 	void init();
 	Token curTok;

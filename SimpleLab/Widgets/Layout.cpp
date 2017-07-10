@@ -2,6 +2,10 @@
 #include "../GUI/guiFuncs.h"
 #include "../prefs.h"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
 void Layout::init(SDL_Texture *texture)
 {
 	m_texture = texture;
@@ -23,6 +27,10 @@ void Layout::onSwipe(int x, int y, float dx, float dy)
 	{
 		layoutState = LayoutState::SWIPE_RIGHT;
 		swipe = 0.f;
+	}
+	else if(layoutState == LayoutState::IDLE && m_position.x < SCR_W - m_dimensions.x / 2)
+	{
+		setInnerStartPosition(getInnerStartPos() + vec2(0, dy));
 	}
 }
 

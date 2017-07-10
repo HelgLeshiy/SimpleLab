@@ -33,7 +33,7 @@ private:
 	void init(  );
 	void destroyApp(  );
 	void event( SDL_Event *evt );
-	void loop(  );
+	void loop( float deltaTime );
 	void rend(  );
 
 	void initWidgets();
@@ -51,6 +51,8 @@ private:
 	bool keyboard = false;
 
 	std::vector< std::pair<Widget*, float> > widgets;
+
+	float fps = 60;
 
 public:
 	int execute(  );	//Вызывает главный цикл
