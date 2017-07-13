@@ -19,7 +19,7 @@ public:
 	*
 	* return: result double value
 	**/
-	double parse(const std::string& input, Namescope *scope);
+	Value* parse(app *appPtr, const std::string& input, Namescope *scope);
 
 	const std::string& getLastVar() const { return lastVar; }
 
@@ -33,7 +33,7 @@ private:
 	};
 
 	Node* createTree(const std::string& expr);
-	double calkulate(Node *exprRoot);
+	Value* calkulate(Node *exprRoot);
 	bool findUnknownVar(Node *node);
 	void transformEquation(Node *&left, Node *&right);
 	static void popTreeLeft(Node *&node);
@@ -41,10 +41,9 @@ private:
 	void getToken();
 
 	bool isaddop(const std::string& s) { return s == "+" || s == "-"; }
-	bool ismulop(const std::string& s) { return s == "*" || s == "/"; }
+	bool ismulop(const std::string& s) { return s == "*" || s == "/" || s == "*."; }
 
 	Node* expression();
-	double assigment();
 	Node* term();
 	Node* power();
 	Node* factor();
@@ -69,6 +68,7 @@ private:
 	std::string lastVar;
 	std::stringstream ss;
 
+	app *m_appPtr = nullptr;
 	Namescope *ns;
 	Lexer lexer;
 

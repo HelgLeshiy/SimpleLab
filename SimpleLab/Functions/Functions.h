@@ -6,31 +6,31 @@
 #include <cstdlib>
 #include <stdexcept>
 
-double f_sin		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_cos		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_tan		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_ctan		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_sinh		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_cosh		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_tanh		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_ctanh		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_logn		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_log		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_lengthStr	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_random		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_integral	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_differencial(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_minFunc	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_maxFunc	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
+Value* f_sin(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_cos(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_tan(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_ctan(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_sinh(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_cosh(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_tanh(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_ctanh(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_logn(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_log(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_lengthStr(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_random(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_integral(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_differencial(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_minFunc(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_maxFunc(app *appPtr, Namescope*, const std::vector<Value*>&);
 
-double f_arcsin		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_arccos		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_arctan		(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_arcctan	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_arcsinh	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_arccosh	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_arctanh	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_arcctanh	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
+Value* f_arcsin(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_arccos(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_arctan(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_arcctan(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_arcsinh(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_arccosh(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_arctanh(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_arcctanh(app *appPtr, Namescope*, const std::vector<Value*>&);
 
-double f_backlogn	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
-double f_backlog	(Namescope*, const std::vector<std::shared_ptr<Value>>&);
+Value* f_backlogn(app *appPtr, Namescope*, const std::vector<Value*>&);
+Value* f_backlog(app *appPtr, Namescope*, const std::vector<Value*>&);

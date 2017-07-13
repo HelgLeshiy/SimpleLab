@@ -37,6 +37,16 @@ Token Lexer::scan()
 		token.sym = RBR;
 		getChar();
 	}
+	else if (look == '[')
+	{
+		token.sym = LSQRBR;
+		getChar();
+	}
+	else if (look == ']')
+	{
+		token.sym = LSQRBR;
+		getChar();
+	}
 	else if(look == '\"')
 	{
 		token.value = getString();

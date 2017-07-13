@@ -7,12 +7,18 @@
 #include <set>
 #include <memory>
 
+class app;
+
+class NoValue { };
+
 /**
 *	Value struct interface.
 **/
 struct Value
 {
+	Value(char type) : valueType(type) { }
 	virtual ~Value() { }
+	char valueType;
 };
 
 /**
@@ -21,8 +27,8 @@ struct Value
 template <typename T>
 struct TypedValue : public Value
 {
-	TypedValue() { }
-	TypedValue(T v) : value(v) { }
+	TypedValue(char type) : Value(type) { }
+	TypedValue(char type, T v) : Value(type), value(v) { }
 	virtual ~TypedValue() { }
 	T value;
 };
@@ -38,8 +44,8 @@ class Namescope;
 **/
 struct InstalledFunction
 {
-	std::function<double(Namescope*, const std::vector<std::shared_ptr<Value>>&)> function;
-    int argnum;
+	std::function<Value*(app* appPtr, Namescope*, const std::vector<Value*>&)> function;
+	char retType;
 	std::string argTypes;
 };
 
@@ -92,7 +98,7 @@ public:
 	*	param	argnum	The number of agruments
 	*	param	name	The name of this function
 	**/
-    void installFunction(std::function<double(Namescope*, const std::vector<std::shared_ptr<Value>>&)> f, int argnum, const std::string& argTypes, std::string name);
+    void installFunction(std::function<Value*(app* appPtr, Namescope*, const std::vector<Value*>&)> f, char retType, const std::string& argTypes, std::string name);
 
 	/**
 	*	Register a new back function in this namescope
@@ -117,7 +123,7 @@ public:
 	*	param	v		The variable interface pointer
 	*	param	name	The name of this variable
 	**/
-	void setVar(std::shared_ptr<Value> v, std::string name);
+	void setVar(Value* v, std::string name);
 
 	/**
 	*	Returns a function pointer
@@ -125,7 +131,7 @@ public:
 	*	param	name	The name of function
 	*	return	The function pointer
 	**/
-    std::shared_ptr<InstalledFunction> getFunc(std::string name) const;
+    InstalledFunction* getFunc(std::string name) const;
 
 	/**
 	*	Returns a value pointer
@@ -133,16 +139,16 @@ public:
 	*	param	name	The name of variable
 	*	return	The value pointer
 	**/
-    std::shared_ptr<Value> getVar(std::string name) const;
+    Value* getVar(std::string name) const;
 
 	void eraseVar(const std::string& name);
 
-	std::map<std::string, std::shared_ptr<InstalledFunction>>::const_iterator functionsBegin() const { return functions.cbegin(); }
-	std::map<std::string, std::shared_ptr<InstalledFunction>>::const_iterator functionsEnd() const { return functions.cend(); }
+	std::map<std::string, InstalledFunction*>::const_iterator functionsBegin() const { return functions.cbegin(); }
+	std::map<std::string, InstalledFunction*>::const_iterator functionsEnd() const { return functions.cend(); }
 
 private:
     const Namescope* p_outer;
-    std::map<std::string, std::shared_ptr<InstalledFunction>> functions;
+    std::map<std::string, InstalledFunction*> functions;
 	std::map<std::string, std::string> backFunctions;
-    std::map<std::string, std::shared_ptr<Value>> vars;
+    std::map<std::string, Value*> vars;
 };

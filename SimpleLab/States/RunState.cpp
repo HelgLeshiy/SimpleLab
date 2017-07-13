@@ -12,8 +12,8 @@
 void RunState::onInit(SDL_Renderer *renderer, SpriteFont *spriteFont)
 {
 	global = new Namescope();
-	global->setVar(std::make_shared< TypedValue<double> >(3.141592653589793), "pi");
-	global->setVar(std::make_shared< TypedValue<double> >(2.718281828459045), "exp");
+	global->setVar(new TypedValue<float>('f', 3.141592653589793f), "pi");
+	global->setVar(new TypedValue<float>('f', 2.718281828459045f), "exp");
 
 	/*SDL_Rect txtInp;
 	txtInp.x = 0;
@@ -38,8 +38,8 @@ void RunState::onInit(SDL_Renderer *renderer, SpriteFont *spriteFont)
 	global->installFunction(f_lengthStr, 1, "s", "strlen");
 	global->installFunction(f_random, 2, "dd", "rand");
 	global->installFunction(f_integral, 3, "sdd", "int");
-	global->installFunction(f_minFunc, 3, "sdd", "minF");
-	global->installFunction(f_maxFunc, 3, "sdd", "maxF");
+	//global->installFunction(f_minFunc, 3, "sdd", "minF");
+	//global->installFunction(f_maxFunc, 3, "sdd", "maxF");
 
 	global->installFunction(f_arcsin, 1, "d", "asin");
 	global->installFunction(f_arccos, 1, "d", "acos");
@@ -106,19 +106,22 @@ void RunState::onEvent(SDL_Event *event)
 	case SDL_KEYDOWN:
 		if (event->key.keysym.sym == SDLK_RETURN)
 		{
-			double result;
+			Value* result;
 			try
 			{
-				result = parser.parse(workspace->getLastLine(), global);
+				result = parser.parse(m_appPtr, workspace->getLastLine(), global);
 			}
 			catch (std::exception &ex)
 			{
 				workspace->writeLine(ex.what());
 				break;
 			}
-			std::string varName = "  " + parser.getLastVar();
-			varName += " = " + app::toString(result);
-			workspace->writeLine(varName);
+			if (result->valueType == 'f')
+			{
+				std::string varName = "  " + parser.getLastVar();
+				varName += parser.getLastVar() + " = " + app::toString(((TypedValue<float>*)result)->value);
+				workspace->writeLine(varName);
+			}
 		}
 		break;
 	}
@@ -205,7 +208,7 @@ void RunState::initWidgets(SDL_Renderer *renderer, SpriteFont *spriteFont)
 			std::string autoWriteLine = it->first + "(";
 			size_t dCurPos = autoWriteLine.length();
 			bool firstString = false;
-			for (int i = 0; i < it->second->argnum - 1; ++i)
+			for (int i = 0; i < it->second->argTypes.length() - 1; ++i)
 			{
 				if (it->second->argTypes[i] == 's')
 				{
