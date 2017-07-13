@@ -1,187 +1,125 @@
 #include "Functions.h"
 #include "../Parser/Parser.h"
+#include "../app.h"
 using namespace std;
 
-double f_sin(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_sin(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if(!arg1)
-		throw std::runtime_error("argument type mismatch in function sin");
-	return sin(arg1->value);
+	return new TypedValue<float>('f', sin(((TypedValue<float>*)args[0])->value));
 }
 
-double f_cos(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_cos(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if(!arg1)
-		throw std::runtime_error("argument type mismatch in function cos");
-	return cos(arg1->value);
+	return new TypedValue<float>('f', cos(((TypedValue<float>*)args[0])->value));
 }
 
-double f_tan(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_tan(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if(!arg1)
-		throw std::runtime_error("argument type mismatch in function tg");
-	return tan(arg1->value);
+	return new TypedValue<float>('f', tan(((TypedValue<float>*)args[0])->value));
 }
 
-double f_ctan(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_ctan(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if(!arg1)
-		throw std::runtime_error("argument type mismatch in function ctg");
-	return 1/tan(arg1->value);
+	return new TypedValue<float>('f', 1/tan(((TypedValue<float>*)args[0])->value));
 }
 
-double f_sinh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_sinh(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if(!arg1)
-		throw std::runtime_error("argument type mismatch in function sinh");
-	return sinh(arg1->value);
+	return new TypedValue<float>('f', sinh(((TypedValue<float>*)args[0])->value));
 }
 
-double f_cosh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_cosh(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if(!arg1)
-		throw std::runtime_error("argument type mismatch in function cosh");
-	return cosh(arg1->value);
+	return new TypedValue<float>('f', cosh(((TypedValue<float>*)args[0])->value));
 }
 
-double f_tanh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_tanh(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if(!arg1)
-		throw std::runtime_error("argument type mismatch in function tanh");
-	return tanh(arg1->value);
+	return new TypedValue<float>('f', tanh(((TypedValue<float>*)args[0])->value));
 }
 
-double f_ctanh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_ctanh(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if(!arg1)
-		throw std::runtime_error("argument type mismatch in function ctanh");
-	return 1/tanh(arg1->value);
+	return new TypedValue<float>('f', 1/tanh(((TypedValue<float>*)args[0])->value));
 }
 
-double f_arcsin(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_arcsin(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if (!arg1)
-		throw std::runtime_error("argument type mismatch in function arcsin");
-	return asin(arg1->value);
+	return new TypedValue<float>('f', asin(((TypedValue<float>*)args[0])->value));
 }
 
-double f_arccos(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_arccos(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if (!arg1)
-		throw std::runtime_error("argument type mismatch in function arccos");
-	return acos(arg1->value);
+	return new TypedValue<float>('f', acos(((TypedValue<float>*)args[0])->value));
 }
 
-double f_arctan(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_arctan(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if (!arg1)
-		throw std::runtime_error("argument type mismatch in function arctg");
-	return atan(arg1->value);
+	return new TypedValue<float>('f', atan(((TypedValue<float>*)args[0])->value));
 }
 
-double f_arcctan(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_arcctan(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if (!arg1)
-		throw std::runtime_error("argument type mismatch in function arcctg");
-	return atan(1/arg1->value);
+	return new TypedValue<float>('f', 1/atan(((TypedValue<float>*)args[0])->value));
 }
 
-double f_arcsinh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_arcsinh(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if (!arg1)
-		throw std::runtime_error("argument type mismatch in function arcsinh");
-	return asinh(arg1->value);
+	return new TypedValue<float>('f', asinh(((TypedValue<float>*)args[0])->value));
 }
 
-double f_arccosh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_arccosh(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if (!arg1)
-		throw std::runtime_error("argument type mismatch in function arccosh");
-	return acosh(arg1->value);
+	return new TypedValue<float>('f', acosh(((TypedValue<float>*)args[0])->value));
 }
 
-double f_arctanh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_arctanh(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if (!arg1)
-		throw std::runtime_error("argument type mismatch in function arctanh");
-	return atanh(arg1->value);
+	return new TypedValue<float>('f', atanh(((TypedValue<float>*)args[0])->value));
 }
 
-double f_arcctanh(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_arcctanh(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if (!arg1)
-		throw std::runtime_error("argument type mismatch in function arcctanh");
-	return atanh(1/arg1->value);
+	return new TypedValue<float>('f', 1/atanh(((TypedValue<float>*)args[0])->value));
 }
 
-double f_logn(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_logn(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if(!arg1)
-		throw std::runtime_error("argument type mismatch in function logn");
-	return log(arg1->value);
+	return new TypedValue<float>('f', log(((TypedValue<float>*)args[0])->value));
 }
 
-double f_log(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_log(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	auto arg2 = (TypedValue<double>*)args[1].get();
-	if(!arg1 || !arg2)
-		throw std::runtime_error("argument type mismatch in function log");
-	return log(arg1->value)/log(arg2->value);
+	return new TypedValue<float>('f', log(((TypedValue<float>*)args[0])->value) / log(((TypedValue<float>*)args[1])->value));
 }
 
-double f_lengthStr(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_lengthStr(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<string>*)args[0].get();
-	if(!arg1)
-		throw std::runtime_error("argument type mismatch in function length");
-	return arg1->value.length();
+	return new TypedValue<float>('f', ((TypedValue<std::string>*)args[0])->value.length());
 }
 
-double f_random(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_random(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	auto arg2 = (TypedValue<double>*)args[1].get();
-	if(!arg1 || !arg2)
-		throw std::runtime_error("argument type mismatch in function random");
-	return rand()%(int)(arg2->value-arg1->value)+arg1->value;
+	return new TypedValue<float>('f', rand()%(int)(((TypedValue<float>*)args[0])->value - ((TypedValue<float>*)args[1])->value)
+									  + ((TypedValue<float>*)args[0])->value);
 }
 
-double f_integral(Namescope* Na, const vector<shared_ptr<Value>>& args)
+Value* f_integral(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<std::string>*)args[0].get();
-	auto arg2 = (TypedValue<double>*)args[1].get();
-	auto arg3 = (TypedValue<double>*)args[2].get();
-	if(!arg1 || !arg2 || !arg3)
-		throw std::runtime_error("argument type mismatch in function integral");
+	auto arg1 = (TypedValue<std::string>*)args[0];
+	auto arg2 = (TypedValue<float>*)args[1];
+	auto arg3 = (TypedValue<float>*)args[2];
 	int n = 2;
 	double h = (arg3->value - arg2->value)/n;
 	Parser p;
-	Namescope localScope(Na);
-	localScope.setVar(std::make_shared< TypedValue<double> >(arg2->value), "x");
-	double fLow = p.parse(arg1->value, &localScope);
-	localScope.setVar(std::make_shared< TypedValue<double> >((arg2->value+arg3->value)/2), "x");
-	double fMid = p.parse(arg1->value, &localScope);
-	localScope.setVar(std::make_shared< TypedValue<double> >(arg3->value), "x");
-	double fHigh = p.parse(arg1->value, &localScope);
-	double S = (fLow + 4*fMid + fHigh)*(h/3);
+	Namescope localScope(ns);
+	localScope.setVar(new TypedValue<float>('f', arg2->value), "x");
+	Value* fLow = p.parse(appPtr, arg1->value, &localScope);
+	localScope.setVar(new TypedValue<float>('f', (arg2->value+arg3->value)/2), "x");
+	Value* fMid = p.parse(appPtr, arg1->value, &localScope);
+	localScope.setVar(new TypedValue<float>('f', arg3->value), "x");
+	Value* fHigh = p.parse(appPtr, arg1->value, &localScope);
+	float S = (((TypedValue<float>*)fLow)->value + 4 * ((TypedValue<float>*)fMid)->value + ((TypedValue<float>*)fHigh)->value)*(h/3);
 	double S1;
 	do
 	{
@@ -190,18 +128,18 @@ double f_integral(Namescope* Na, const vector<shared_ptr<Value>>& args)
 		S1 = S;
 		int c = 4;
 		double x = arg2->value;
-		S = fLow+fHigh;
+		S = ((TypedValue<float>*)fLow)->value + ((TypedValue<float>*)fHigh)->value;
 		for(int o = 1; o <= n-1; o++)
 		{
 			x += h;
-			localScope.setVar(std::make_shared< TypedValue<double> >(x), "x");
-			double fX = p.parse(arg1->value, &localScope);
-			S += c*fX;
+			localScope.setVar(new TypedValue<float>('f', x), "x");
+			Value *fX = p.parse(appPtr, arg1->value, &localScope);
+			S += c * ((TypedValue<float>*)fX)->value;
 			c = 6-c;
 		}	
 		S *= h/3;
 	}while(fabs(S-S1)/15 >= 0.00000001);
-	return S;
+	return new TypedValue<float>('f', S);
 }
 /*
 double f_differencial(Namescope* Na, const vector<shared_ptr<Value>>& args)
@@ -274,7 +212,9 @@ double f_differencial(Namescope* Na, const vector<shared_ptr<Value>>& args)
 	return 
 }
 */
-double f_minFunc(Namescope* Na, const vector <shared_ptr<Value>>& args)
+
+/*
+Value* f_minFunc(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
 	auto arg1 = (TypedValue<std::string>*)args[0].get();
 	auto arg2 = (TypedValue<double>*)args[1].get();
@@ -318,7 +258,7 @@ double f_minFunc(Namescope* Na, const vector <shared_ptr<Value>>& args)
 	return f;
 }
 
-double f_maxFunc(Namescope* Na, const vector <shared_ptr<Value>>& args)
+Value* f_maxFunc(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
 	auto arg1 = (TypedValue<std::string>*)args[0].get();
 	auto arg2 = (TypedValue<double>*)args[1].get();
@@ -361,6 +301,7 @@ double f_maxFunc(Namescope* Na, const vector <shared_ptr<Value>>& args)
 	double f = p.parse(arg1->value, &localScope);
 	return f;
 }
+*/
 
 /*double f_equation(Namescope* Na, const vector <shared_ptr<Value>>& args)
 {
@@ -393,19 +334,12 @@ double f_maxFunc(Namescope* Na, const vector <shared_ptr<Value>>& args)
 	}
 }*/
 
-double f_backlogn(Namescope* Na, const vector <shared_ptr<Value>>& args)
+Value* f_backlogn(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	if (!arg1)
-		throw std::runtime_error("argument type mismatch in function backlogn");
-	return exp(arg1->value);
+	return new TypedValue<float>('f', exp(((TypedValue<float>*)args[0])->value));
 }
 
-double f_backlog(Namescope* Na, const vector <shared_ptr<Value>>& args)
+Value* f_backlog(app *appPtr, Namescope* ns, const std::vector<Value*>& args)
 {
-	auto arg1 = (TypedValue<double>*)args[0].get();
-	auto arg2 = (TypedValue<double>*)args[1].get();
-	if (!arg1 || !arg2)
-		throw std::runtime_error("argument type mismatch in function backlog");
-	return pow(arg1->value, arg2->value);
+	return new TypedValue<float>('f', pow(((TypedValue<float>*)args[0])->value, ((TypedValue<float>*)args[1])->value));
 }
