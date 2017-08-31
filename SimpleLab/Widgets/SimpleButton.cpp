@@ -41,6 +41,15 @@ void SimpleButton::render(SDL_Renderer *renderer, SpriteFont& spriteFont)
 
 void SimpleButton::onTouch(int x, int y)
 {
+}
+
+void SimpleButton::onDetouch(int x, int y)
+{
 	if (m_cbFunction)
 		m_cbFunction();
+}
+
+void SimpleButton::onSwipe(int x, int y, float dx, float dy)
+{
+	m_pressed = false;
 }

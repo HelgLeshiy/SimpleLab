@@ -118,8 +118,7 @@ void RunState::onEvent(SDL_Event *event)
 			}
 			if (result->valueType == 'f')
 			{
-				std::string varName = "  " + parser.getLastVar();
-				varName += parser.getLastVar() + " = " + app::toString(((TypedValue<float>*)result)->value);
+				std::string varName = "  " + parser.getLastVar() + " = " + app::toString(((TypedValue<float>*)result)->value);
 				workspace->writeLine(varName);
 			}
 		}

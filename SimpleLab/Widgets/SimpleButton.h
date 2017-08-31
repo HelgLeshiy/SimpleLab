@@ -22,4 +22,10 @@ protected:
 	ColorRGBA8 m_pressColor;
 
 	std::function<void(void)> m_cbFunction;
+protected:
+	virtual void onDetouch(int x, int y) override;
+
+
+	virtual void onSwipe(int x, int y, float dx, float dy) override;
+
 };

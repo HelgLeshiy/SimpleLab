@@ -237,6 +237,7 @@ Value* Parser::parse(app *appPtr, const std::string& input, Namescope *scope)
 
 	Value *res = calkulate(rightTree);
 	ns->setVar(res, leftTree->token.value);
+	lastVar = leftTree->token.value;
 
 	return res;
 }
