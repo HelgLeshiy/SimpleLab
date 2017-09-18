@@ -1,60 +1,69 @@
+/**
+ * \file	app.h
+ * \brief	Заголовочный файл с описанием класса приложения
+ */
 #pragma once
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include "GUI/guiFuncs.h"
 #include "SpriteFont.h"
-#include "Parser/Parser.h"
-#include <string>
-#include <list>
-#include "Widgets/Widget.h"
-#include "Widgets/MultilineEdit.h"
-#include "ResourceManager.h"
+#include <stack>
+#include <sstream>
 
-enum class MainAppState
-{
-	LOGO, RUN, EXIT
-};
+class BaseState;
 
-enum class LogoState
-{
-	INCREASE,
-	DECREASE
-};
-
+/**
+ * \brief Главный класс приложения
+ * 
+ * Класс app управляет основными ресурсами приложения, созданием окна,
+ * выбором графических устройств, управляет стеком состояний
+ * через главный цикл приложения
+ */
 class app
 {
 private:
-	SDL_Window *wnd = nullptr;
-	SDL_Renderer *rnd = nullptr;
-	MainAppState appState = MainAppState::LOGO;
-	LogoState logoState = LogoState::INCREASE;
-	float logoTimer = 0.f;
+	SDL_Window *wnd = nullptr;		///< Окно приложения
+	SDL_Renderer *rnd = nullptr;	///< Hardware рендерер
 
 	void init(  );
 	void destroyApp(  );
-	void event( SDL_Event *evt );
-	void loop(  );
+	void onEvent(SDL_Event *event);
+	void onLoop(float deltaTime);
 	void rend(  );
 
-	void initWidgets();
+	SpriteFont spriteFont;			///< Рендерер шрифтов
 
-	SpriteFont spriteFont;
-	Namescope *global = nullptr;
-	Parser parser;
-	std::string text;
-	
-	MultilineEdit *workspace = nullptr;
-	
-	bool touch = false;
-	vec2 touchPos;
+	float fps = 60;					///< Ограничение FPS
 
-	bool keyboard = false;
-
-	std::vector< std::pair<Widget*, float> > widgets;
+	std::stack<BaseState*> m_states; ///< Стек состояний
 
 public:
-	int execute(  );	//�������� ������� ����
+	/**
+	 * Запуск приложения
+	 *
+	 * \return 0 либо 1, если произошла критическая ошибка
+	 */
+	int execute(  );
+
+	/**
+	 * Помещает состояние в стек
+	 *
+	 * \param[in] state Объект дочернего класса BaseState
+	 */
+	void pushState(BaseState *state);
+
+	/**
+	 * Удаляет текущее состояние
+	 */
+	void popState();
+
 	app(  );
 	~app(  );
+
+	template <typename T>
+	static std::string toString(T a)
+	{
+		std::stringstream ss;
+		ss << a;
+		return ss.str();
+	}
 };
 

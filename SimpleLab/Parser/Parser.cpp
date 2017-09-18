@@ -1,5 +1,7 @@
 #include "Parser.h"
 #include <cmath>
+#include <algorithm>
+#include "value_math.h"
 
 std::map<std::string, std::function<void(Parser::Node *&left, Parser::Node *&right)>> Parser::backOperators;
 
@@ -95,6 +97,51 @@ void Parser::operatorMapInit()
 		right = newRightRoot;
 	};
 
+	backOperators["*."] = [this](Node *&left, Node *&right)
+	{
+		if (!findUnknownVar(left->args[0]))
+			std::swap(left->args[0], left->args[1]);
+
+		Node *newRightRoot = new Node;
+		newRightRoot->token = Token(OPERATOR, "/.");
+
+		newRightRoot->args.push_back(right);
+		newRightRoot->args.push_back(left->args[1]);
+
+		popTreeLeft(left);
+
+		right = newRightRoot;
+	};
+
+	backOperators["/."] = [this](Node *&left, Node *&right)
+	{
+		if (!findUnknownVar(left->args[0]))
+		{
+			Node *newRightRoot = new Node;
+			newRightRoot->token = Token(OPERATOR, "/.");
+
+			Node *addNode = new Node;
+			addNode->token = Token(NUMBER, "1");
+
+			newRightRoot->args.push_back(addNode);
+			newRightRoot->args.push_back(right);
+
+			right = newRightRoot;
+
+			std::swap(left->args[0], left->args[1]);
+		}
+
+		Node *newRightRoot = new Node;
+		newRightRoot->token = Token(OPERATOR, "*.");
+
+		newRightRoot->args.push_back(right);
+		newRightRoot->args.push_back(left->args[1]);
+
+		popTreeLeft(left);
+
+		right = newRightRoot;
+	};
+
 	backOperators["^"] = [this](Node *&left, Node *&right)
 	{
 		if (findUnknownVar(left->args[0]))
@@ -128,12 +175,13 @@ void Parser::operatorMapInit()
 			std::swap(left->args[0], left->args[1]);
 			popTreeLeft(left);
 		}
-		
 	};
 }
 
-double Parser::parse(const std::string& input, Namescope *scope)
+Value* Parser::parse(app *appPtr, const std::string& input, Namescope *scope)
 {
+	m_appPtr = appPtr;
+
 	Node *leftTree = nullptr;
 	Node *rightTree = nullptr;
 
@@ -152,6 +200,11 @@ double Parser::parse(const std::string& input, Namescope *scope)
 		leftTree->token.sym = IDENT;
 		leftTree->token.value = "ans";
 	}
+
+	std::cout << "Left tree:\n";
+	printTree(leftTree);
+	std::cout << "\n\Right tree:\n";
+	printTree(rightTree);
 
 	bool varInLeft = findUnknownVar(leftTree);
 	bool varInRight = findUnknownVar(rightTree);
@@ -182,8 +235,9 @@ double Parser::parse(const std::string& input, Namescope *scope)
 
 	transformEquation(leftTree, rightTree);
 
-	double res = calkulate(rightTree);
-	ns->setVar(std::make_shared< TypedValue<double> >(res), leftTree->token.value);
+	Value *res = calkulate(rightTree);
+	ns->setVar(res, leftTree->token.value);
+	lastVar = leftTree->token.value;
 
 	return res;
 }
@@ -195,7 +249,7 @@ Parser::Node* Parser::createTree(const std::string& expr)
 	return expression();
 }
 
-double Parser::calkulate(Node *exprRoot)
+Value *Parser::calkulate(Node *exprRoot)
 {
 	if (!exprRoot->args.empty())
 	{
@@ -203,34 +257,31 @@ double Parser::calkulate(Node *exprRoot)
 		{
 		case OPERATOR:
 		{
-			double arg1 = calkulate(exprRoot->args[0]);
-			double arg2 = calkulate(exprRoot->args[1]);
+			Value *arg1 = calkulate(exprRoot->args[0]);
+			Value *arg2 = calkulate(exprRoot->args[1]);
 			const std::string& op = exprRoot->token.value;
-			if (op == "+")		return arg1 + arg2;
-			else if (op == "-")	return arg1 - arg2;
-			else if (op == "*")	return arg1 * arg2;
-			else if (op == "/")	return arg1 / arg2;
+			if (op == "+")		return plus(arg1, arg2);
+			else if (op == "-")	return minus(arg1, arg2);
+			else if (op == "*.") return multiplyElem(arg1, arg2);
+			else if (op == "*") return multiply(arg1, arg2);
+			else if (op == "/") return divide(arg1, arg2);
 			else if (op == "^")	return pow(arg1,arg2);
 			else throw std::runtime_error("Unknown operator " + op);
 		} break;
 
 		case IDENT:
 		{
-			std::vector<std::shared_ptr<Value>> params;
+			std::vector<Value*> params;
 
 			for (auto &it : exprRoot->args)
 			{
 				if (it->token.sym == STRING)
 				{
-					std::shared_ptr<Value> value(std::make_shared< TypedValue<std::string> >());
-					dynamic_cast<TypedValue<std::string>*>(value.get())->value = it->token.value;
-					params.push_back(value);
+					params.push_back(new TypedValue<std::string>('s', it->token.value));
 				}
 				else
 				{
-					std::shared_ptr<Value> value(std::make_shared< TypedValue<double> >());
-					dynamic_cast<TypedValue<double>*>(value.get())->value = calkulate(it);
-					params.push_back(value);
+					params.push_back(new TypedValue<float>('f', ((TypedValue<float>*)calkulate(it))->value));
 				}
 			}
 
@@ -239,7 +290,7 @@ double Parser::calkulate(Node *exprRoot)
 				throw std::runtime_error("unknown function");
 			if (lookup == Namescope::LookupResult::wrong_signature)
 				throw std::runtime_error("signature mismatch for function");
-			return ns->getFunc(exprRoot->token.value)->function(ns, params);
+			return ns->getFunc(exprRoot->token.value)->function(m_appPtr, ns, params);
 		} break;
 
 		default:
@@ -252,7 +303,7 @@ double Parser::calkulate(Node *exprRoot)
 		{
 		case NUMBER:
 		{
-			return atof(exprRoot->token.value.c_str());
+			return new TypedValue<float>('f', atof(exprRoot->token.value.c_str()));
 		} break;
 
 		case IDENT:
@@ -260,7 +311,7 @@ double Parser::calkulate(Node *exprRoot)
 			auto lookup = ns->lookupVar(exprRoot->token.value);
 			if (lookup == Namescope::LookupResult::not_found)
 				throw std::runtime_error("unknown variable");
-			return dynamic_cast<TypedValue<double>*>(ns->getVar(exprRoot->token.value).get())->value;
+			return ns->getVar(exprRoot->token.value);
 		} break;
 			
 		default:
@@ -342,11 +393,6 @@ Parser::Node*  Parser::expression()
 		root = left;
 
 	return root;
-}
-
-double Parser::assigment()
-{
-	return 0;
 }
 
 Parser::Node*  Parser::term()

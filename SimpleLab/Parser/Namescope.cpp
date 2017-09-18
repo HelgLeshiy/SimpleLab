@@ -4,7 +4,7 @@ Namescope::LookupResult Namescope::lookupFunc(std::string name, int nargs) const
 {
     auto psig = functions.find(name);
     auto found = psig != functions.end();
-	if (found && psig->second->argnum == nargs)
+	if (found && psig->second->argTypes.length() == nargs)
         return LookupResult::found;
     if (p_outer != nullptr)
     {
@@ -24,13 +24,13 @@ Namescope::LookupResult Namescope::lookupVar(std::string name) const
     return LookupResult::not_found;
 }
 
-void Namescope::installFunction(std::function<double(Namescope*, const std::vector<std::shared_ptr<Value>>&)> f, int argnum, const std::string& argTypes, std::string name)
+void Namescope::installFunction(std::function<Value*(app* appPtr, Namescope*, const std::vector<Value*>&)> f, char retType, const std::string& argTypes, std::string name)
 {
     InstalledFunction* pf = new InstalledFunction;
     pf->function = f;
-    pf->argnum = argnum;
+    pf->retType = retType;
 	pf->argTypes = argTypes;
-    functions.insert(make_pair(name, std::shared_ptr<InstalledFunction>(pf)));
+    functions.insert(make_pair(name, pf));
 }
 
 void Namescope::registerBackFunction(const std::string& functionName, const std::string& backFunctionName)
@@ -46,12 +46,12 @@ const std::string& Namescope::getBackFunction(const std::string& functionName)
 	return backFunctions[functionName];
 }
 
-void Namescope::setVar(std::shared_ptr<Value> v, std::string name)
+void Namescope::setVar(Value* v, std::string name)
 {
 	vars[name] = v;
 }
 
-std::shared_ptr<InstalledFunction> Namescope::getFunc(std::string name) const
+InstalledFunction* Namescope::getFunc(std::string name) const
 {
     auto pfunc = functions.find(name);
     if (pfunc != functions.end())
@@ -61,7 +61,7 @@ std::shared_ptr<InstalledFunction> Namescope::getFunc(std::string name) const
     return nullptr;
 }
 
-std::shared_ptr<Value> Namescope::getVar(std::string name) const
+Value* Namescope::getVar(std::string name) const
 {
     auto pvar = vars.find(name);
     if (pvar != vars.end())

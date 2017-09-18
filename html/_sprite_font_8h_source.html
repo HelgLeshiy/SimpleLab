@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SimpleLab: Исходный файл D:/Projects/SimpleLab/SimpleLab/SpriteFont.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+</script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="SimpleLab_Logo_ICO_1.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">SimpleLab
+   &#160;<span id="projectnumber">0.8</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.13 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Поиск');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('_sprite_font_8h_source.html','');});
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">SpriteFont.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;SDL2/SDL.h&gt;</span></div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;SDL2/SDL_ttf.h&gt;</span></div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gfx_8h.html">GUI/gfx.h</a>&quot;</span></div><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">enum class</span> FontAlign</div><div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;{</div><div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    CENTERED,</div><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    LEFT,</div><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    RIGHT</div><div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;};</div><div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div><div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="class_sprite_font.html">   15</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_sprite_font.html">SpriteFont</a></div><div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div><div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">public</span>:</div><div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="class_sprite_font.html">SpriteFont</a>( );</div><div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    ~<a class="code" href="class_sprite_font.html">SpriteFont</a>( );</div><div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div><div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">void</span> init( SDL_Renderer *renderer, <span class="keyword">const</span> std::string&amp; fontSheetFile, <span class="keywordtype">int</span> rows, <span class="keywordtype">int</span> columns );</div><div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">void</span> draw( SDL_Renderer *renderer, <span class="keyword">const</span> std::string&amp; text, <span class="keyword">const</span> <a class="code" href="structvec2.html">vec2</a>&amp; pos, <span class="keyword">const</span> <a class="code" href="structvec2.html">vec2</a>&amp; scaling, <span class="keyword">const</span> <a class="code" href="struct_color_r_g_b_a8.html">ColorRGBA8</a>&amp; color, FontAlign align = FontAlign::LEFT );</div><div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keywordtype">int</span> getFontHeight()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_symbHeight; }</div><div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">int</span> getFontWidth()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_symbWidth; }</div><div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    SDL_Surface * CreateFontMap( SDL_Renderer * rnd, <span class="keyword">const</span> <span class="keywordtype">char</span> * fontFile, SDL_Color textColor, <span class="keywordtype">int</span> rows, <span class="keywordtype">int</span> clms );</div><div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">int</span> getTextWidth(<span class="keyword">const</span> std::string&amp; text, <span class="keyword">const</span> <a class="code" href="structvec2.html">vec2</a>&amp; scaling)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> text.length() * scaling.x * m_symbWidth; }</div><div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">int</span> getSymbolWidth()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_symbWidth; }</div><div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div><div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">private</span>:</div><div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    SDL_Texture *m_texture = <span class="keyword">nullptr</span>;</div><div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">int</span> m_texWidth = 0;</div><div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">int</span> m_texHeight = 0;</div><div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">int</span> m_rows = 0;</div><div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">int</span> m_columns = 0;</div><div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">int</span> m_symbWidth = 0;</div><div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">int</span> m_symbHeight = 0;</div><div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;};</div><div class="ttc" id="structvec2_html"><div class="ttname"><a href="structvec2.html">vec2</a></div><div class="ttdef"><b>Definition:</b> gfx.h:11</div></div>
+<div class="ttc" id="gfx_8h_html"><div class="ttname"><a href="gfx_8h.html">gfx.h</a></div><div class="ttdoc">Набор вспомогательных структур для представления графических элементов </div></div>
+<div class="ttc" id="class_sprite_font_html"><div class="ttname"><a href="class_sprite_font.html">SpriteFont</a></div><div class="ttdef"><b>Definition:</b> SpriteFont.h:15</div></div>
+<div class="ttc" id="struct_color_r_g_b_a8_html"><div class="ttname"><a href="struct_color_r_g_b_a8.html">ColorRGBA8</a></div><div class="ttdef"><b>Definition:</b> gfx.h:18</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_7a6499598ddcfcabe96e224cb4a6d834.html">Projects</a></li><li class="navelem"><a class="el" href="dir_f6605ccbc920e847c80cc5bfd18813ae.html">SimpleLab</a></li><li class="navelem"><a class="el" href="dir_24f11cbf8b59da24bab34f21fad37153.html">SimpleLab</a></li><li class="navelem"><b>SpriteFont.h</b></li>
+    <li class="footer">Создано системой
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
+  </ul>
+</div>
+</body>
+</html>

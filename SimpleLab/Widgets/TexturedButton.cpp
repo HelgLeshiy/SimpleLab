@@ -1,6 +1,10 @@
 #include "TexturedButton.h"
 #include "../GUI/guiFuncs.h"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
 void TexturedButton::init(SDL_Texture *releaseTexture, SDL_Texture *pressTexture, std::function<void(void)> cbFunction /*= nullptr*/)
 {
 	m_releaseTexture = releaseTexture;

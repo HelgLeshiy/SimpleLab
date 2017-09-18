@@ -1,5 +1,9 @@
 #include "SimpleButton.h"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
 void SimpleButton::init(const std::string& text, const ColorRGBA8& textColor,
 	const ColorRGBA8& fillColor, const ColorRGBA8& pressColor,
 	std::function<void(void)> cbFunction)
@@ -37,6 +41,15 @@ void SimpleButton::render(SDL_Renderer *renderer, SpriteFont& spriteFont)
 
 void SimpleButton::onTouch(int x, int y)
 {
+}
+
+void SimpleButton::onDetouch(int x, int y)
+{
 	if (m_cbFunction)
 		m_cbFunction();
+}
+
+void SimpleButton::onSwipe(int x, int y, float dx, float dy)
+{
+	m_pressed = false;
 }

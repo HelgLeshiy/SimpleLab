@@ -1,5 +1,9 @@
 #include "Widget.h"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
 bool Widget::onEvent(SDL_Event *event)
 {
 	vec2 absPos(0.f, 0.f);
@@ -54,8 +58,11 @@ bool Widget::onEvent(SDL_Event *event)
 		int x = event->button.x;
 		int y = event->button.y;
 #endif
-		m_pressed = false;
-		onDetouch(x, y);
+		if (m_pressed)
+		{
+			m_pressed = false;
+			onDetouch(x, y);
+		}
 	}
 	break;
 

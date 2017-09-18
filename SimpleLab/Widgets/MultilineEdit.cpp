@@ -3,6 +3,10 @@
 #include <cctype>
 #include <cstring>
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
 MultilineEdit::MultilineEdit(Widget *parent)
 	: Widget(parent), m_contentShift(0.f, 0.f)
 {
