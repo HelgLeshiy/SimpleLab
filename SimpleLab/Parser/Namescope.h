@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <map>
 #include <string>
@@ -9,34 +9,37 @@
 
 class app;
 
+/**
+ * \brief Пустой тип
+ */
 class NoValue { };
 
 /**
-*	Value struct interface.
-**/
+ * \brief Интерфейс класса Значение
+ **/
 struct Value
 {
 	Value(char type) : valueType(type) { }
 	virtual ~Value() { }
-	char valueType;
+	char valueType; ///< Тип переменной ('f', 's', 'n', ...)
 };
 
 /**
-*	Template implementation for a Value type
-**/
+ * \brief Шаблонная реализация класса Value
+ */
 template <typename T>
 struct TypedValue : public Value
 {
 	TypedValue(char type) : Value(type) { }
 	TypedValue(char type, T v) : Value(type), value(v) { }
 	virtual ~TypedValue() { }
-	T value;
+	T value; ///< Хранимое значение
 };
 
 class Namescope;
 
 /**
-*	Definition for a preinstalled math function.
+*	\brief Определение предустановленной математической функции
 *
 *	field function: real function pointer with a vector of arguments
 *	field argnum: the argument count
@@ -44,105 +47,126 @@ class Namescope;
 **/
 struct InstalledFunction
 {
-	std::function<Value*(app* appPtr, Namescope*, const std::vector<Value*>&)> function;
-	char retType;
-	std::string argTypes;
+	std::function<Value*(app* appPtr, Namescope*,
+		                 const std::vector<Value*>&)> function; ///< Указатель на функцию
+	char retType;			///< Тип возвращаемого значения ('f', 's', 'n', ...)
+	std::string argTypes;	///< Типы аргументов
 };
 
 
 /**
-*	Namescope - class defines the number of preinstalled functions
-*	and variables.
-*	You also can build a namescope tree with a outer constructor.
-*	All child namescope has access to parent scopes.
-**/
+ *	\brief Namescope - класс определяющий набор предустановленных функций
+ *	и переменных
+ *	
+ *	Вы также можете создать область иерархию областей видимости с помощью 
+ *	конструктора, принимающего внешний Namescope.
+ *
+ *	Все области-потомки имеют доступ к внешним областям видимости.
+ */
 class Namescope
 {
 public:
     Namescope() : p_outer(nullptr) { }
 
 	/**
-	*	Child namescope constructor
-	*	param	outer	parent namescope
-	**/
+	 *	Конструктор для локальных областей видимости
+	 *
+	 *	\param[in]	outer	Родительский namescope
+	 */
     Namescope(const Namescope* outer) : p_outer(outer) { }
 
 	/**
-	*	Lookup codes
-	**/
+	 *	Перечисление результатов поиска
+	 */
 	enum LookupResult { not_found, wrong_signature, found };
 
 	/**
-	*	Search for a function in this namescope
-	*
-	*	param	name	The function name
-	*	param	nargs	The number of agruments
-	*
-	*	return	The result of search
-	**/
+	 *	Поиск функций в данной области
+	 *
+	 *	\param[in]	name	Имя функции
+	 *	\param[in]	nargs	Количество аргументов
+	 *
+	 *	\return	Результат поиска
+	 */
     LookupResult lookupFunc(std::string name, int nargs) const;
 
 	/**
-	*	Search for a variable in this namescope
-	*
-	*	param	name	The variable name
-	*
-	*	return	The result of search
-	**/
+	 *	Поиск переменной в данной области
+	 *
+	 *	\param[in]	name	Имя переменной
+	 *
+	 *	\return	Результат поиска
+	 */
     LookupResult lookupVar(std::string name) const;
 
 	/**
-	*	Install a new function in this namescope
-	*
-	*	param	f		The function pointer
-	*	param	argnum	The number of agruments
-	*	param	name	The name of this function
-	**/
-    void installFunction(std::function<Value*(app* appPtr, Namescope*, const std::vector<Value*>&)> f, char retType, const std::string& argTypes, std::string name);
+	 *	Установка новой функции
+	 *
+	 *	\param[in]	f			Указатель на функцию
+	 *	\param[in]	retType		Тип возвращаемого значения
+	 *	\param[in]	argTypes	Типы аргументов
+	 *	\param[in]	name		Имя новой функции
+	 */
+    void installFunction(std::function<Value*(app* appPtr, Namescope*,
+		                                      const std::vector<Value*>&)> f,
+						 char retType,
+						 const std::string& argTypes,
+						 std::string name);
 
 	/**
-	*	Register a new back function in this namescope
-	*
-	*	param	functionName		The the name of direct function
-	*	param	backFunctionName	The the name of backward function
-	**/
-	void registerBackFunction(const std::string& functionName, const std::string& backFunctionName);
+	 *	Указание обратной функции
+	 *
+	 *	\param[in]	functionName		Имя прямой функции
+	 *	\param[in]	backFunctionName	Имя обратной к ней функции
+	 */
+	void registerBackFunction(const std::string& functionName, 
+							  const std::string& backFunctionName);
 
 	/**
-	*	Returns a backward function name
-	*
-	*	param	functionName		The the name of direct function
-	*
-	*	return the name of backward function or "" if not exist
-	**/
+	 *	Возвращяет имя обратной функции
+	 *
+	 *	\param[in]	functionName		Имя прямой функции
+	 *
+	 *	\return Имя обратной функции или "", если ее не существует
+	 */
 	const std::string& getBackFunction(const std::string& functionName);
 
 	/**
-	*	Sets a variable in this namescope
-	*
-	*	param	v		The variable interface pointer
-	*	param	name	The name of this variable
-	**/
+	 *	Устанавливает значение переменной
+	 *
+	 *	\param[in]	v		Указатель на переменную
+	 *	\param[in]	name	The name of this variable
+	 */
 	void setVar(Value* v, std::string name);
 
 	/**
-	*	Returns a function pointer
-	*
-	*	param	name	The name of function
-	*	return	The function pointer
-	**/
+	 *	Возвращает указатель на функцию
+	 *
+	 *	\param[in]	name	Имя функции
+	 *
+	 *	\return Указатель на функцию или nullptr, если такой нет
+	 */
     InstalledFunction* getFunc(std::string name) const;
 
 	/**
-	*	Returns a value pointer
-	*
-	*	param	name	The name of variable
-	*	return	The value pointer
-	**/
+	 *	Возвращает указатель на переменную
+	 *
+	 *	\param[in]	name	Имя переменной
+	 *
+	 *	\return Указатель на переменную или nullptr, если такой нет
+	 */
     Value* getVar(std::string name) const;
 
+	/**
+	 *	Удаляет переменную
+	 *
+	 *	\param[in]	name	Имя переменной
+	 */
 	void eraseVar(const std::string& name);
 
+	/**
+	 *	Доступ к итереторам на хранимые функции
+	 */
 	std::map<std::string, InstalledFunction*>::const_iterator functionsBegin() const { return functions.cbegin(); }
 	std::map<std::string, InstalledFunction*>::const_iterator functionsEnd() const { return functions.cend(); }
 

@@ -1,8 +1,19 @@
+/**
+ * \file	RunState.h
+ * \brief	Заголовочный файл с описанием основного рабочего состояния
+ *
+ * Рабочая область для выполнения математических расчетов
+ */
 #pragma once
 #include "BaseState.h"
 #include "../Parser/Parser.h"
 #include "../Widgets/MultilineEdit.h"
 
+/**
+ * \brief Основное состояние приложение
+ * 
+ * Класс RunState - реализация интерфейса BaseState для математических расчетов.
+ */
 class RunState : public BaseState
 {
 public:
@@ -14,20 +25,23 @@ public:
 	void onRender(SDL_Renderer *renderer, SpriteFont *spriteFont) override;
 	void onExit() override;
 
-private:
+public:
+	/**
+	 * Инициализация виджетов
+	 */
 	void initWidgets(SDL_Renderer *renderer, SpriteFont *spriteFont);
 
-private:
-	Namescope *global = nullptr;
-	Parser parser;
-	std::string text;
+public:
+	Namescope *global = nullptr; ///< Глобальная область видимости
+	Parser parser; ///< Парсер
+	std::string text; ///< Набираемый текст
 
-	MultilineEdit *workspace = nullptr;
+	MultilineEdit *workspace = nullptr; ///< Виджет рабочей области
 
-	bool touch = false;
-	vec2 touchPos;
+	bool touch = false; ///< Нажатие пальца/мыши
+	vec2 touchPos; ///< Координаты пальца/курсора
 
-	bool keyboard = false;
+	bool keyboard = false; ///< Виртуальная клавиатура вкл/выкл
 
-	std::vector< std::pair<Widget*, float> > widgets;
+	std::vector< std::pair<Widget*, float> > widgets; ///< Остальные виджеты
 };

@@ -1,3 +1,7 @@
+/**
+ * \file	app.h
+ * \brief	Заголовочный файл с описанием класса приложения
+ */
 #pragma once
 #include <SDL2/SDL.h>
 #include "SpriteFont.h"
@@ -6,11 +10,18 @@
 
 class BaseState;
 
+/**
+ * \brief Главный класс приложения
+ * 
+ * Класс app управляет основными ресурсами приложения, созданием окна,
+ * выбором графических устройств, управляет стеком состояний
+ * через главный цикл приложения
+ */
 class app
 {
 private:
-	SDL_Window *wnd = nullptr;
-	SDL_Renderer *rnd = nullptr;
+	SDL_Window *wnd = nullptr;		///< Окно приложения
+	SDL_Renderer *rnd = nullptr;	///< Hardware рендерер
 
 	void init(  );
 	void destroyApp(  );
@@ -18,16 +29,32 @@ private:
 	void onLoop(float deltaTime);
 	void rend(  );
 
-	SpriteFont spriteFont;
+	SpriteFont spriteFont;			///< Рендерер шрифтов
 
-	float fps = 60;
+	float fps = 60;					///< Ограничение FPS
 
-	std::stack<BaseState*> m_states;
+	std::stack<BaseState*> m_states; ///< Стек состояний
 
 public:
-	int execute(  );	//�������� ������� ����
+	/**
+	 * Запуск приложения
+	 *
+	 * \return 0 либо 1, если произошла критическая ошибка
+	 */
+	int execute(  );
+
+	/**
+	 * Помещает состояние в стек
+	 *
+	 * \param[in] state Объект дочернего класса BaseState
+	 */
 	void pushState(BaseState *state);
+
+	/**
+	 * Удаляет текущее состояние
+	 */
 	void popState();
+
 	app(  );
 	~app(  );
 

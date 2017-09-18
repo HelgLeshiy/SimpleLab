@@ -1,3 +1,12 @@
+/**
+ * \file	Functions.h
+ * \brief	Набор предустановленных функций для глобальной области видимости
+ *
+ * Параметры функций:
+ * \param[in] 		appPtr 		Указатель на класс-приложение
+ * \param[in,out] 	namescope	Внешняя область видимости
+ * \param[in]					Вектор аргументов
+ */
 #pragma once
 #include "../Parser/Namescope.h"
 #include <string>

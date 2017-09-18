@@ -1,3 +1,9 @@
+/**
+ * \file	value_math.h
+ * \brief	Заголовочный файл с описанием простейших 
+ * математических операций для типа Value
+ */
+#pragma 
 #pragma once
 #include "Namescope.h"
 
